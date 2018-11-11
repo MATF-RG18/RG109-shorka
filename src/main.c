@@ -3,9 +3,9 @@
 #include <GL/glut.h>
 #include <stdio.h>
 
-float angle=0.0f; // ugao rotacije oko y ose 
-float lx = 0.0f, lz = -1.0f, ly = 0.0f;  // linija pogleda 
-float x = 0.0f,z = 5.0f, y = 1.0f; // pozicija kamere u xz ravni 
+float angle=0.0f; // angle of rotation aroung y axis
+float lx = 0.0f, lz = -1.0f, ly = 0.0f;  // line of view
+float x = 0.0f,z = 5.0f, y = 1.0f; // camera position in xz plane
 
 float n_y = 1.0f;
 
@@ -21,7 +21,7 @@ int prev_y = 0;
 
 float jump_max = 4.0f;
 
-// Deklaracije call back fja  
+// declarations of callback funcs
 static void on_keyboard(unsigned char key, int xx, int yy);
 static void on_reshape(int width, int height);
 static void draw_object(void);
@@ -32,10 +32,11 @@ static void change_y(int yy);
 static void jump();
 
 int main(int argc, char **argv) {
+    // glutt initialising
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_RGBA | GLUT_DEPTH | GLUT_DOUBLE);
 
-    // Kreiranje prozora
+    // creating window
     glutInitWindowSize(window_width, window_height);
     glutInitWindowPosition(100, 100);
     glutCreateWindow("shorka");
@@ -45,7 +46,7 @@ int main(int argc, char **argv) {
 
     glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
-    float light_position[] = {1, 1, 1, 0}; // svetlo gore desno iza glave
+    float light_position[] = {1, 1, 1, 0}; // light behind "head"
     float light_diffuse[] = {0.7f, 0.7f, 0.7f, 1}; 
     float light_ambient[] = {0.7f, 0.7f, 0.7f, 1};
     float light_specular[] = {0.7f, 0.7f, 0.7f, 1};
@@ -66,7 +67,7 @@ int main(int argc, char **argv) {
     glMaterialf(GL_FRONT, GL_SHININESS, shininess);
         
     
-    // registrovanje callback
+    // registering callbacks
     glutDisplayFunc(render_scene);
     glutReshapeFunc(on_reshape);
     glutKeyboardFunc(on_keyboard);
@@ -81,17 +82,11 @@ static void change_x(int xx) {
     if (xx > prev_x) {
         printf("Looking right...\n");
 
-        delta_angle = (x - xx) * 0.00002f;
+        delta_angle = -(x - xx) * 0.00002f;
     }
     else if (xx < prev_x) {
         printf("Looking left...\n");
-        delta_angle = (x + xx) * 0.00002f;
-    }
-    else {
-        // if (xx > window_width/2) 
-        //     delta_angle = (x - xx) * 0.00001f;
-        // else
-        //     delta_angle = (x + xx) * 0.00001f;
+        delta_angle = -(x + xx) * 0.00002f;
     }
 
     lx = -sin(angle + delta_angle);
@@ -118,6 +113,7 @@ static void mouse_motion(int xx, int yy) {
     printf("Mouse in motion... x: %d y: %d\n", xx, yy);
     angle += delta_angle;
 
+    // rotating
     if (xx > window_width/8 && xx < 7*window_width/8) {
         change_x(xx);
         prev_x = xx;
@@ -144,15 +140,16 @@ static void jump() {
 static void on_keyboard(unsigned char key, int xx, int yy) {
     switch (key) {
         case 27:
-            /* Zavrsava se program. */
             exit(0);
             break;
         case 'a':
+        // step left
             x += step;
             printf("Left key pressed\n");
             glutPostRedisplay();
             break;
         case 'd':
+        // step right
             // angle += 0.01f;
 			// lx = sin(angle);
 			// lz = -cos(angle);
@@ -161,6 +158,7 @@ static void on_keyboard(unsigned char key, int xx, int yy) {
             glutPostRedisplay();
 			break;
         case 'w' :
+        // step forward
 		// 	x += lx * fraction;
 		// 	z += lz * fraction;
             z += step;
@@ -168,6 +166,7 @@ static void on_keyboard(unsigned char key, int xx, int yy) {
             glutPostRedisplay();
 			break;
         case 's' :
+        // step back
 			// x -= lx * fraction;
 			// z -= lz * fraction;
             z -= step;
@@ -175,6 +174,7 @@ static void on_keyboard(unsigned char key, int xx, int yy) {
             glutPostRedisplay();
 			break;
         case 32:
+        // TODO: jump
             printf("Spacebar pressed\n");
             jump();
             break;
@@ -182,9 +182,10 @@ static void on_keyboard(unsigned char key, int xx, int yy) {
 }
 
 static void on_reshape(int width, int height) {
-    // Podesavam viewport
+    // Setting viewport
     glViewport(0, 0, width, height);
 
+    // saving current window height and width
     window_height = height;
     window_width = width;
 
@@ -209,6 +210,7 @@ void render_scene(void) {
 			x+lx, 1.0f,  z+lz,
 			0.0f, 1.0f,  0.0f);
 
+    // setting color for base
     glDisable(GL_LIGHTING);
     glColor3f(1.0f, 1.0f, 1.0f);
 	glBegin(GL_QUADS);
@@ -219,6 +221,7 @@ void render_scene(void) {
 	glEnd();
     glEnable(GL_LIGHTING);
 
+    // drawing 36 cubes for debug :)
     for(int i = -3; i < 3; i++)
 		for(int j=-3; j < 3; j++) {
 			glPushMatrix();
