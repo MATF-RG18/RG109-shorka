@@ -148,7 +148,7 @@ static void on_keyboard(unsigned char key, int xx, int yy) {
             exit(0);
             break;
         case 'a':
-            x -= step;
+            x += step;
             printf("Left key pressed\n");
             glutPostRedisplay();
             break;
@@ -156,21 +156,21 @@ static void on_keyboard(unsigned char key, int xx, int yy) {
             // angle += 0.01f;
 			// lx = sin(angle);
 			// lz = -cos(angle);
-            x += step;
+            x -= step;
             printf("Right key pressed\n");
             glutPostRedisplay();
 			break;
         case 'w' :
 		// 	x += lx * fraction;
 		// 	z += lz * fraction;
-            z -= step;
+            z += step;
             printf("Up key pressed\n");
             glutPostRedisplay();
 			break;
         case 's' :
 			// x -= lx * fraction;
 			// z -= lz * fraction;
-            z += step;
+            z -= step;
             printf("Down key pressed\n");
             glutPostRedisplay();
 			break;
