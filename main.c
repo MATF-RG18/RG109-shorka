@@ -3,27 +3,42 @@
 #include <GL/glut.h>
 #include <stdio.h>
 
-float angle=0.0; /* ugao rotacije oko y ose */
-float lx=0.0f, lz=-1.0f; /* linija pogleda */
-float x=0.0f,z=5.0f; /* pozicija kamere u xz ravni */
+float angle=0.0f; // ugao rotacije oko y ose 
+float lx = 0.0f, lz = -1.0f, ly = 0.0f;  // linija pogleda 
+float x = 0.0f,z = 5.0f, y = 1.0f; // pozicija kamere u xz ravni 
+
+float n_y = 1.0f;
 
 float step = 0.1f;
 
-/* Deklaracije callback funkcija. */
+float delta_angle = 0.0f;
+
+int window_width = 800;
+int window_height = 600;
+
+int prev_x = 0;
+int prev_y = 0;
+
+float jump_max = 4.0f;
+
+// Deklaracije call back fja  
 static void on_keyboard(unsigned char key, int xx, int yy);
 static void on_reshape(int width, int height);
 static void draw_object(void);
 static void render_scene(void);
+static void mouse_motion(int xx, int yy);
+static void change_x(int xx);
+static void change_y(int yy);
+static void jump();
 
 int main(int argc, char **argv) {
-    /* Inicijalizuje se GLUT. */
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_RGBA | GLUT_DEPTH | GLUT_DOUBLE);
 
     // Kreiranje prozora
-    glutInitWindowSize(800, 600);
+    glutInitWindowSize(window_width, window_height);
     glutInitWindowPosition(100, 100);
-    glutCreateWindow(argv[0]);
+    glutCreateWindow("shorka");
     glClearColor(0, 0, 0, 0);
 
     glEnable(GL_DEPTH_TEST);
@@ -31,7 +46,7 @@ int main(int argc, char **argv) {
     glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
     float light_position[] = {1, 1, 1, 0}; // svetlo gore desno iza glave
-    float light_diffuse[] = {0.7f, 0.7f, 0.7f, 1}; // bela svetlost
+    float light_diffuse[] = {0.7f, 0.7f, 0.7f, 1}; 
     float light_ambient[] = {0.7f, 0.7f, 0.7f, 1};
     float light_specular[] = {0.7f, 0.7f, 0.7f, 1};
 
@@ -55,15 +70,75 @@ int main(int argc, char **argv) {
     glutDisplayFunc(render_scene);
     glutReshapeFunc(on_reshape);
     glutKeyboardFunc(on_keyboard);
+    glutPassiveMotionFunc(mouse_motion);
 
-    /* Obavlja se OpenGL inicijalizacija. */
-    
-
-
-    /* Program ulazi u glavnu petlju. */
     glutMainLoop();
 
     return 0;
+}
+
+static void change_x(int xx) {
+    if (xx > prev_x) {
+        printf("Looking right...\n");
+
+        delta_angle = (x - xx) * 0.00002f;
+    }
+    else if (xx < prev_x) {
+        printf("Looking left...\n");
+        delta_angle = (x + xx) * 0.00002f;
+    }
+    else {
+        // if (xx > window_width/2) 
+        //     delta_angle = (x - xx) * 0.00001f;
+        // else
+        //     delta_angle = (x + xx) * 0.00001f;
+    }
+
+    lx = -sin(angle + delta_angle);
+    lz = cos(angle + delta_angle);
+
+    glutPostRedisplay();
+}
+
+static void change_y(int yy) {
+    if (yy > prev_y) {
+        printf("Looking down...\n");
+
+        n_y -= 0.01f;
+    }
+    else if (yy < prev_y) {
+        printf("Looking up...\n");
+        n_y += 0.01f;
+    }
+
+    glutPostRedisplay();
+}
+
+static void mouse_motion(int xx, int yy) {
+    printf("Mouse in motion... x: %d y: %d\n", xx, yy);
+    angle += delta_angle;
+
+    if (xx > window_width/8 && xx < 7*window_width/8) {
+        change_x(xx);
+        prev_x = xx;
+        prev_y = yy;
+    }
+
+    if (yy > window_height/8 && yy < 7*window_height/8) {
+        change_y(yy);
+    }
+}
+
+static void jump() {
+    while (y < jump_max) {
+        printf("GOING UPPPP\n");
+        y += 1;
+        glutPostRedisplay();
+    }
+    while (y > 1.0f) {
+        y -= 1;
+        glutPostRedisplay();
+    }
 }
 
 static void on_keyboard(unsigned char key, int xx, int yy) {
@@ -99,14 +174,20 @@ static void on_keyboard(unsigned char key, int xx, int yy) {
             printf("Down key pressed\n");
             glutPostRedisplay();
 			break;
+        case 32:
+            printf("Spacebar pressed\n");
+            jump();
+            break;
     }
 }
 
 static void on_reshape(int width, int height) {
-    /* Podesava se viewport. */
+    // Podesavam viewport
     glViewport(0, 0, width, height);
 
-    /* Podesava se projekcija. */
+    window_height = height;
+    window_width = width;
+
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     gluPerspective(60, (float) width / height, 1, 1000);
@@ -121,10 +202,10 @@ void render_scene(void) {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glMatrixMode(GL_MODELVIEW);
-	// Reset transformations
+	
 	glLoadIdentity();
-	// Set the camera
-	gluLookAt(x, 1.0f, z,
+	
+	gluLookAt(x, y, z,
 			x+lx, 1.0f,  z+lz,
 			0.0f, 1.0f,  0.0f);
 
