@@ -4,10 +4,14 @@
 #include <stdio.h>
 
 float angle=0.0f; // angle of rotation aroung y axis
-float lx = 0.0f, lz = -1.0f, ly = 0.0f;  // line of view
+float angle1 = -5000;
+float lx = 0.0f, lz = 1.0f, ly = 0.0f;  // line of view
 float x = 0.0f,z = 5.0f, y = 1.0f; // camera position in xz plane
 
-float n_y = 1.0f;
+float speed = 0.1f;
+float rot_speed = 0.0005f;
+
+int cursor_hidden = 0;
 
 float step = 0.1f;
 
@@ -51,9 +55,9 @@ int main(int argc, char **argv) {
     float light_ambient[] = {0.7f, 0.7f, 0.7f, 1};
     float light_specular[] = {0.7f, 0.7f, 0.7f, 1};
 
-    float material_diffuse[] = {0.7f, 0, 0.2f, 1};
+    float material_diffuse[] = {0.57647f, 0.439216f,  0.858824, 1};
     float material_ambient[] = {0, 0, 0, 1};
-    float material_specular[] = {0.7f, 0.7f, 0.7f, 1};
+    float material_specular[] = {0.4f, 0.7f, 0.7f, 1};
     float shininess = 25;
 
     glLightfv(GL_LIGHT0, GL_POSITION, light_position);
@@ -99,11 +103,11 @@ static void change_y(int yy) {
     if (yy > prev_y) {
         printf("Looking down...\n");
 
-        n_y -= 0.01f;
+        
     }
     else if (yy < prev_y) {
         printf("Looking up...\n");
-        n_y += 0.01f;
+        
     }
 
     glutPostRedisplay();
@@ -114,27 +118,41 @@ static void mouse_motion(int xx, int yy) {
     angle += delta_angle;
 
     // rotating
-    if (xx > window_width/8 && xx < 7*window_width/8) {
+    if (xx > window_width/3 && xx < 2*window_width/3) {
         change_x(xx);
         prev_x = xx;
         prev_y = yy;
     }
-
-    if (yy > window_height/8 && yy < 7*window_height/8) {
-        change_y(yy);
+    else {
+        glutWarpPointer(window_width / 2, window_height / 2);
     }
+
+    // if (yy > window_height/8 && yy < 7*window_height/8) {
+    //     change_y(yy);
+    // }
 }
 
 static void jump() {
-    while (y < jump_max) {
-        printf("GOING UPPPP\n");
-        y += 1;
+    // while (y < jump_max) {
+    //     printf("GOING UPPPP\n");
+    //     y += 1;
+    //     glutPostRedisplay();
+    // }
+    // while (y > 1.0f) {
+    //     y -= 1;
+    //     glutPostRedisplay();
+    // }
+    while (y <= jump_max) {
+        y += 0.2f;
+        printf("from jump: %f\n", y);
         glutPostRedisplay();
     }
-    while (y > 1.0f) {
+    while (y > 1) {
         y -= 1;
+        printf("from jump going down: %f\n", y);
         glutPostRedisplay();
     }
+        
 }
 
 static void on_keyboard(unsigned char key, int xx, int yy) {
@@ -142,37 +160,58 @@ static void on_keyboard(unsigned char key, int xx, int yy) {
         case 27:
             exit(0);
             break;
-        case 'a':
         // step left
-            x += step;
+        case 'a':
+            // x += step;
+            x += lz * speed;
+			z -= lx * speed;
             printf("Left key pressed\n");
             glutPostRedisplay();
             break;
-        case 'd':
         // step right
+        case 'd':
             // angle += 0.01f;
 			// lx = sin(angle);
 			// lz = -cos(angle);
-            x -= step;
+            // x -= step;
+            x -= lz * speed;
+			z += lx * speed;
             printf("Right key pressed\n");
             glutPostRedisplay();
 			break;
-        case 'w' :
         // step forward
+        case 'w' :
 		// 	x += lx * fraction;
 		// 	z += lz * fraction;
-            z += step;
+            // z += step;
+            x += lx * speed;
+            y += ly * speed;
+            z += lz * speed; 
             printf("Up key pressed\n");
             glutPostRedisplay();
 			break;
-        case 's' :
         // step back
+        case 's' :
 			// x -= lx * fraction;
 			// z -= lz * fraction;
-            z -= step;
+            // z -= step;
+            x -= lx * speed;
+			y -= ly * speed;
+			z -= lz * speed;
             printf("Down key pressed\n");
             glutPostRedisplay();
 			break;
+        // hiding cursor
+        case 'k':
+            if (cursor_hidden) {
+                glutSetCursor(GLUT_CURSOR_TOP_SIDE);
+                cursor_hidden = 0;
+            }
+            else {
+                glutSetCursor(GLUT_CURSOR_NONE);
+                cursor_hidden = 1;
+            }
+            break;
         case 32:
         // TODO: jump
             printf("Spacebar pressed\n");
@@ -207,12 +246,12 @@ void render_scene(void) {
 	glLoadIdentity();
 	
 	gluLookAt(x, y, z,
-			x+lx, 1.0f,  z+lz,
+			x+lx, y+ly,  z+lz,
 			0.0f, 1.0f,  0.0f);
 
     // setting color for base
     glDisable(GL_LIGHTING);
-    glColor3f(1.0f, 1.0f, 1.0f);
+    glColor3f(0.22f, 0.69f, 0.87f);
 	glBegin(GL_QUADS);
 		glVertex3f(-100.0f, 0.0f, -100.0f);
 		glVertex3f(-100.0f, 0.0f,  100.0f);
