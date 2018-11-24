@@ -7,6 +7,8 @@
 // constants
 
 #define M_PI acos(-1.0)
+#define TIMER_INTERVAL (20)
+#define JUMP_TIMER_ID 0 // timer for jumping animation
 
 float angle_horizontal=0.0f; // angle of rotation aroung y axis
 float angle_vertical = 0.0f; // angle for looking up and down
@@ -31,7 +33,12 @@ int window_height = 800;
 int prev_x = 0;
 int prev_y = 0;
 
-float jump_max = 4.0f;
+float jump_max = 4.119998f;
+int jumping_animation = 0;
+int GO_UP = 1;
+int GO_DOWN = 0;
+
+int FULL_SCREEN = 0;
 
 // declarations of callback funcs
 static void on_keyboard(unsigned char key, int xx, int yy);
@@ -41,7 +48,8 @@ static void render_scene(void);
 static void mouse_motion(int xx, int yy);
 static void change_x(int xx);
 static void change_y(int yy);
-static void jump();
+static void on_jump();
+static void toggle_screen_size();
 
 int main(int argc, char **argv) {
     // glutt initialising
@@ -89,7 +97,7 @@ int main(int argc, char **argv) {
     glutReshapeFunc(on_reshape);
     glutKeyboardFunc(on_keyboard);
     glutPassiveMotionFunc(mouse_motion);
-    glutFullScreen();
+    
     glutMainLoop();
 
     return 0;
@@ -160,8 +168,36 @@ static void mouse_motion(int xx, int yy) {
     }
 }
 
-static void jump() {
-        
+static void on_jump(int value) {
+    if (value != JUMP_TIMER_ID)
+        return;
+    
+    if (y <= jump_max && GO_UP == 1) {
+        y += 0.03f;
+        if (y == jump_max) {
+            printf("Hit max jump!!!\n");
+            GO_DOWN = 1;
+            GO_UP = 0;
+        }
+        printf("going up y: %f == %f goup: %d godown: %d\n",y,jump_max, GO_UP, GO_DOWN);
+    }
+    if (y > 1.0f && GO_DOWN == 1) {
+        y -= 0.1f;
+        printf("going down y: %f \n",y);
+    }
+
+    if (y == 0.920000f) {
+        jumping_animation = 0;
+        GO_DOWN = 0;
+        GO_UP = 1;
+        printf("------------__%d up %d down %d", jumping_animation, GO_UP, GO_DOWN);
+    }
+
+    glutPostRedisplay();
+
+    if (jumping_animation) {
+        glutTimerFunc(TIMER_INTERVAL, on_jump, JUMP_TIMER_ID);
+    }
 }
 
 static void on_keyboard(unsigned char key, int xx, int yy) {
@@ -226,11 +262,33 @@ static void on_keyboard(unsigned char key, int xx, int yy) {
                 cursor_hidden = 1;
             }
             break;
+        
+        
         case 32:
         // TODO: jump
-            printf("Spacebar pressed\n");
-            jump();
+            if (!jumping_animation) {
+                glutTimerFunc(TIMER_INTERVAL, on_jump, JUMP_TIMER_ID);
+                jumping_animation = 1;
+            }
             break;
+
+        case 'F':
+        case 'f':
+            toggle_screen_size();
+            break;
+    }
+}
+
+static void toggle_screen_size() {
+    if (FULL_SCREEN == 0) {
+        glutFullScreen();
+        FULL_SCREEN = 1;
+    }
+    else {
+        glutReshapeWindow(window_height, window_width);
+        glutPositionWindow(0,0);
+        glutPostRedisplay();
+        FULL_SCREEN = 0;
     }
 }
 
