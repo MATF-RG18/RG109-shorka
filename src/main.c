@@ -9,6 +9,17 @@
 #define M_PI acos(-1.0)
 #define TIMER_INTERVAL (20)
 #define JUMP_TIMER_ID 0 // timer for jumping animation
+#define MOVE_TIMER_ID 1
+
+#define FORWARD 'w'
+#define LEFT 'a'
+#define BACK 's'
+#define RIGHT 'd'
+
+#define W 0
+#define A 1
+#define S 2
+#define D 3
 
 float angle_horizontal=0.0f; // angle of rotation aroung y axis
 float angle_vertical = 0.0f; // angle for looking up and down
@@ -16,11 +27,10 @@ float lx = 0.0f, lz = 1.0f, ly = 0.0f;  // line of view
 float x = 0.0f,z = 5.0f, y = 1.0f; // camera position in xz plane
 
 float speed = 0.1f;
+float speed1 = 0.05f;
 float rot_speed = 0.0005f;
 
 int cursor_hidden = 0;
-
-float step = 0.05f;
 
 float delta_angle_horizontal = 0.0f;
 float detla_angle_vertical = 0.0f;
@@ -40,6 +50,12 @@ int GO_DOWN = 0;
 
 int FULL_SCREEN = 0;
 
+int moving_state = 0;
+float step = 0.05f;
+char moving_keys[] = {FORWARD, LEFT, BACK, RIGHT};
+int key_pressed[] = {0, 0, 0, 0}; 
+int num_of_pressed_keys = 0;
+
 // declarations of callback funcs
 static void on_keyboard(unsigned char key, int xx, int yy);
 static void on_reshape(int width, int height);
@@ -50,6 +66,9 @@ static void change_x(int xx);
 static void change_y(int yy);
 static void on_jump();
 static void toggle_screen_size();
+static void on_move(int value);
+static void on_release(unsigned char key, int xx, int yy);
+static void idle_func();
 
 int main(int argc, char **argv) {
     // glutt initialising
@@ -97,6 +116,9 @@ int main(int argc, char **argv) {
     glutReshapeFunc(on_reshape);
     glutKeyboardFunc(on_keyboard);
     glutPassiveMotionFunc(mouse_motion);
+    glutKeyboardUpFunc(on_release);
+    glutSetKeyRepeat(GLUT_KEY_REPEAT_OFF);
+    glutIdleFunc(idle_func);
     
     glutMainLoop();
 
@@ -149,7 +171,7 @@ static void mouse_motion(int xx, int yy) {
     // rotating view
     // if (xx != prev_x)
     if (xx > window_width/3 && xx < 2*window_width/3) {
-        printf("[X axis] Motion in x... x=%d, y=%d\n", xx, yy);
+        // printf("[X axis] Motion in x... x=%d, y=%d\n", xx, yy);
         change_x(xx);
         prev_x = xx;
     }
@@ -159,12 +181,57 @@ static void mouse_motion(int xx, int yy) {
     
     // if (yy != prev_y)
     if (yy > window_height/3 && yy < 2*window_height/3) {
-        printf("[Y axis] x=%d, y=%d\n", xx, yy);
+        // printf("[Y axis] x=%d, y=%d\n", xx, yy);
         change_y(yy);
         prev_y = yy;
     }
     else {
         glutWarpPointer(window_width / 2, window_height / 2);
+    }
+}
+
+static void on_move(int value) {
+    if (value != MOVE_TIMER_ID)
+        return;
+
+    speed = num_of_pressed_keys == 2 ? speed1 : speed;
+
+    if (key_pressed[W]) {
+        x += lx * speed;
+        y += ly * speed;
+        z += lz * speed; 
+        // printf("Up key pressed\n");
+    }
+    if (key_pressed[A]) {
+        x += lz * speed;
+        z -= lx * speed;
+        // printf("Left key pressed\n");
+    }
+    if (key_pressed[S]) {
+        key_pressed[S] = 1;
+        // x -= lx * fraction;
+        // z -= lz * fraction;
+        // z -= step;
+        x -= lx * speed;
+        y -= ly * speed;
+        z -= lz * speed;
+        // printf("Down key pressed\n");
+    }
+    if (key_pressed[D]) {
+        // angle += 0.01f;
+        // lx = sin(angle);
+        // lz = -cos(angle);
+        // x -= step;
+        x -= lz * speed;
+        z += lx * speed;
+        // printf("Right key pressed\n");
+    }
+
+    glutPostRedisplay();
+
+    if (moving_state) {
+        moving_state = 0;
+        glutTimerFunc(TIMER_INTERVAL, on_jump, JUMP_TIMER_ID);
     }
 }
 
@@ -200,6 +267,44 @@ static void on_jump(int value) {
     }
 }
 
+// Ovde uraditi vektor gravitacije da vuce na dole, proveri koliziju sa podom
+static void idle_func() {
+    if (!moving_state) {
+        glutTimerFunc(TIMER_INTERVAL, on_move, MOVE_TIMER_ID);
+        moving_state = 1;
+    }
+}
+
+static void on_release(unsigned char key, int xx, int yy) {
+    // printf("-------------------------------------");
+    // printf("[ON_RELEASE] relesed key: %c\n", key);
+    // printf("[ON_RELEASE]\nkey_pressed[W] = %d\nkey_pressed[A] = %d\nkey_pressed[D] = %d\nkey_pressed[S] = %d\n", key_pressed[W], key_pressed[A], key_pressed[D], key_pressed[S]);
+    // printf("-------------------------------------");
+    switch (key) {
+        case 'W':
+        case 'w':
+            num_of_pressed_keys--;
+            key_pressed[W] = 0;
+            break;
+        case 'A':
+        case 'a':
+            num_of_pressed_keys--;
+            key_pressed[A] = 0;
+            break;
+        case 'S':
+        case 's':
+            num_of_pressed_keys--;
+            key_pressed[S] = 0;
+            break;
+        case 'D':
+        case 'd':
+            num_of_pressed_keys--;
+            key_pressed[D] = 0;
+            break;
+    }
+
+}
+
 static void on_keyboard(unsigned char key, int xx, int yy) {
     switch (key) {
         case 27:
@@ -208,47 +313,26 @@ static void on_keyboard(unsigned char key, int xx, int yy) {
         // step left
         case 'A':
         case 'a':
-            // x += step;
-            x += lz * speed;
-			z -= lx * speed;
-            printf("Left key pressed\n");
-            glutPostRedisplay();
+            num_of_pressed_keys++;
+            key_pressed[A] = 1;
             break;
         // step right
         case 'D':
         case 'd':
-            // angle += 0.01f;
-			// lx = sin(angle);
-			// lz = -cos(angle);
-            // x -= step;
-            x -= lz * speed;
-			z += lx * speed;
-            printf("Right key pressed\n");
-            glutPostRedisplay();
-			break;
+            num_of_pressed_keys++;
+            key_pressed[D] = 1;
+            break;
         // step forward
         case 'W':
         case 'w' :
-		// 	x += lx * fraction;
-		// 	z += lz * fraction;
-            // z += step;
-            x += lx * speed;
-            y += ly * speed;
-            z += lz * speed; 
-            printf("Up key pressed\n");
-            glutPostRedisplay();
+            num_of_pressed_keys++;
+            key_pressed[W] = 1;
 			break;
         // step back
         case 'S':
         case 's' :
-			// x -= lx * fraction;
-			// z -= lz * fraction;
-            // z -= step;
-            x -= lx * speed;
-			y -= ly * speed;
-			z -= lz * speed;
-            printf("Down key pressed\n");
-            glutPostRedisplay();
+            num_of_pressed_keys++;
+            key_pressed[S] = 1;
 			break;
         // hiding cursor
         case 'K':
@@ -286,6 +370,8 @@ static void toggle_screen_size() {
     }
     else {
         glutReshapeWindow(window_height, window_width);
+        glViewport(0, 0, window_width, window_height);
+        gluPerspective(60, (float) window_width / window_height, 1, 1000);
         glutPositionWindow(0,0);
         glutPostRedisplay();
         FULL_SCREEN = 0;
