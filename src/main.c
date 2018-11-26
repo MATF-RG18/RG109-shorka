@@ -7,6 +7,7 @@
 #define M_PI acos(-1.0)
 #define TIMER_INTERVAL (20)
 
+#define GLOBAL_LOOP_TIMER_ID 3
 #define JUMP_TIMER_ID 2 // timer for jumping animation
 #define MOVE_TIMER_ID 1 // timer for moving
 #define MAIN_TIMER_ID 0 // timer for time :D
@@ -22,6 +23,8 @@
 #define D 3
 
 // -------------------------------------------------------------------------------------------
+int main_timer_active = 0;
+
 float angle_horizontal=0.0f; // angle of rotation aroung y axis
 float angle_vertical = 0.0f; // angle for looking up and down
 float lx = 0.0f, lz = 1.0f, ly = 0.0f;  // line of view
@@ -44,10 +47,13 @@ int window_height = 800;
 int prev_x = 0;
 int prev_y = 0;
 
-float jump_max = 4.119998f;
+double jump_max = 4.600000;
 int jumping_animation = 0;
 int GO_UP = 1;
 int GO_DOWN = 0;
+double height_increase =  0.3;
+double height_decrease = 0.1;
+int space_pressed = 0;
 
 int FULL_SCREEN = 0;
 
@@ -56,6 +62,8 @@ float step = 0.05f;
 char moving_keys[] = {FORWARD, LEFT, BACK, RIGHT};
 int key_pressed[] = {0, 0, 0, 0}; 
 int num_of_pressed_keys = 0;
+
+int pause_pressed = 0;
 
 // -------------------------------------------------------------------------------------------
 
@@ -71,7 +79,9 @@ static void on_jump();
 static void toggle_screen_size();
 static void on_move(int value);
 static void on_release(unsigned char key, int xx, int yy);
-static void idle_func();
+// static void idle_func();
+static void main_timer_func();
+static void global_loop_timer_func();
 
 int main(int argc, char **argv) {
     // glutt initialising
@@ -121,7 +131,10 @@ int main(int argc, char **argv) {
     glutPassiveMotionFunc(mouse_motion);
     glutKeyboardUpFunc(on_release);
     glutSetKeyRepeat(GLUT_KEY_REPEAT_OFF);
-    glutIdleFunc(idle_func);
+    // glutIdleFunc(idle_func);
+    main_timer_active = 1;
+    // glutTimerFunc(TIMER_INTERVAL, main_timer_func, MAIN_TIMER_ID);
+    glutTimerFunc(TIMER_INTERVAL, global_loop_timer_func, GLOBAL_LOOP_TIMER_ID);
     
     glutMainLoop();
 
@@ -242,39 +255,53 @@ static void on_jump(int value) {
     if (value != JUMP_TIMER_ID)
         return;
     
-    if (y <= jump_max && GO_UP == 1) {
-        y += 0.03f;
-        if (y == jump_max) {
-            printf("Hit max jump!!!\n");
-            GO_DOWN = 1;
-            GO_UP = 0;
-        }
-        printf("going up y: %f == %f goup: %d godown: %d\n",y,jump_max, GO_UP, GO_DOWN);
-    }
-    if (y > 1.0f && GO_DOWN == 1) {
-        y -= 0.1f;
-        printf("going down y: %f \n",y);
+    if (y < jump_max - height_decrease && GO_UP == 1) {
+        // printf("Increasing height!!!");
+        y += height_increase;
     }
 
-    if (y == 0.920000f) {
-        jumping_animation = 0;
-        GO_DOWN = 0;
-        GO_UP = 1;
-        printf("------------__%d up %d down %d", jumping_animation, GO_UP, GO_DOWN);
+    // printf("[JUMP] goup=%d y=%lf jump_max=%lf\n", GO_UP, y, jump_max);
+    if ((y + 0.02 >= jump_max || y - 0.02 >= jump_max || y == jump_max) && y >= 1) {
+        GO_UP = 0;
     }
-
     glutPostRedisplay();
 
     if (jumping_animation) {
         glutTimerFunc(TIMER_INTERVAL, on_jump, JUMP_TIMER_ID);
+        jumping_animation = 0;
     }
 }
 
-// Ovde uraditi vektor gravitacije da vuce na dole, proveri koliziju sa podom
-static void idle_func() {
+static void global_loop_timer_func() {
+    // main_timer_active = 1;
+    if (!pause_pressed) {
+        glutTimerFunc(TIMER_INTERVAL, main_timer_func, MAIN_TIMER_ID);
+    }
+
+    glutTimerFunc(TIMER_INTERVAL, global_loop_timer_func, GLOBAL_LOOP_TIMER_ID);
+}
+
+// int i = 0;
+static void main_timer_func() {
+    // printf("[MAIN_TIMER] %d. tick tock\n", i++);
+    main_timer_active = 0;
+
     if (!moving_state) {
         glutTimerFunc(TIMER_INTERVAL, on_move, MOVE_TIMER_ID);
         moving_state = 1;
+    }
+
+    if (y > 1 && !GO_UP) {
+        // printf("Should decrease height!\n");
+        y -= height_decrease;
+        glutPostRedisplay();
+    }
+
+    printf("[MAIN_TIMER] pause=%d\n", pause_pressed);
+
+    if (!main_timer_active && !pause_pressed) {
+        glutTimerFunc(TIMER_INTERVAL, main_timer_func, MAIN_TIMER_ID);
+        main_timer_active = 1;
     }
 }
 
@@ -303,6 +330,9 @@ static void on_release(unsigned char key, int xx, int yy) {
         case 'd':
             num_of_pressed_keys--;
             key_pressed[D] = 0;
+            break;
+        case 32:
+            space_pressed = 0;
             break;
     }
 
@@ -353,6 +383,8 @@ static void on_keyboard(unsigned char key, int xx, int yy) {
         
         case 32:
         // TODO: jump
+            printf("Space pressed!!!\n");
+            space_pressed = 1;
             if (!jumping_animation) {
                 glutTimerFunc(TIMER_INTERVAL, on_jump, JUMP_TIMER_ID);
                 jumping_animation = 1;
@@ -361,6 +393,16 @@ static void on_keyboard(unsigned char key, int xx, int yy) {
         case 'F':
         case 'f':
             toggle_screen_size();
+            break;
+        case 'P':
+        case 'p':
+            printf("on pressed p: pause=%d\n", pause_pressed);
+            if (pause_pressed)
+                pause_pressed = 0;
+            else {
+                pause_pressed = 1;
+                main_timer_active = 0;
+            }
             break;
     }
 }
