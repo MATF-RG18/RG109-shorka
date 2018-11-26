@@ -3,13 +3,13 @@
 #include <GL/glut.h>
 #include <stdio.h>
 
-
 // constants
-
 #define M_PI acos(-1.0)
 #define TIMER_INTERVAL (20)
-#define JUMP_TIMER_ID 0 // timer for jumping animation
-#define MOVE_TIMER_ID 1
+
+#define JUMP_TIMER_ID 2 // timer for jumping animation
+#define MOVE_TIMER_ID 1 // timer for moving
+#define MAIN_TIMER_ID 0 // timer for time :D
 
 #define FORWARD 'w'
 #define LEFT 'a'
@@ -21,6 +21,7 @@
 #define S 2
 #define D 3
 
+// -------------------------------------------------------------------------------------------
 float angle_horizontal=0.0f; // angle of rotation aroung y axis
 float angle_vertical = 0.0f; // angle for looking up and down
 float lx = 0.0f, lz = 1.0f, ly = 0.0f;  // line of view
@@ -55,6 +56,8 @@ float step = 0.05f;
 char moving_keys[] = {FORWARD, LEFT, BACK, RIGHT};
 int key_pressed[] = {0, 0, 0, 0}; 
 int num_of_pressed_keys = 0;
+
+// -------------------------------------------------------------------------------------------
 
 // declarations of callback funcs
 static void on_keyboard(unsigned char key, int xx, int yy);
@@ -355,7 +358,6 @@ static void on_keyboard(unsigned char key, int xx, int yy) {
                 jumping_animation = 1;
             }
             break;
-
         case 'F':
         case 'f':
             toggle_screen_size();
