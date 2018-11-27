@@ -7,7 +7,6 @@
 #define M_PI acos(-1.0)
 #define TIMER_INTERVAL (20)
 
-#define GLOBAL_LOOP_TIMER_ID 3
 #define JUMP_TIMER_ID 2 // timer for jumping animation
 #define MOVE_TIMER_ID 1 // timer for moving
 #define MAIN_TIMER_ID 0 // timer for time :D
@@ -48,7 +47,7 @@ int prev_x = 0;
 int prev_y = 0;
 
 double jump_max = 4.600000;
-int jumping_animation = 0;
+int jumping_animation = 1;
 int GO_UP = 1;
 int GO_DOWN = 0;
 double height_increase =  0.3;
@@ -65,6 +64,9 @@ int num_of_pressed_keys = 0;
 
 int pause_pressed = 0;
 
+int mm_xx = 0; // for debuging purposes
+int mm_yy = 0;
+
 // -------------------------------------------------------------------------------------------
 
 // declarations of callback funcs
@@ -79,9 +81,7 @@ static void on_jump();
 static void toggle_screen_size();
 static void on_move(int value);
 static void on_release(unsigned char key, int xx, int yy);
-// static void idle_func();
 static void main_timer_func();
-static void global_loop_timer_func();
 
 int main(int argc, char **argv) {
     // glutt initialising
@@ -123,7 +123,7 @@ int main(int argc, char **argv) {
     glMaterialfv(GL_FRONT, GL_SPECULAR, material_specular);
     glMaterialf(GL_FRONT, GL_SHININESS, shininess);
         
-    
+    jumping_animation = 0;
     // registering callbacks
     glutDisplayFunc(render_scene);
     glutReshapeFunc(on_reshape);
@@ -131,10 +131,8 @@ int main(int argc, char **argv) {
     glutPassiveMotionFunc(mouse_motion);
     glutKeyboardUpFunc(on_release);
     glutSetKeyRepeat(GLUT_KEY_REPEAT_OFF);
-    // glutIdleFunc(idle_func);
     main_timer_active = 1;
-    // glutTimerFunc(TIMER_INTERVAL, main_timer_func, MAIN_TIMER_ID);
-    glutTimerFunc(TIMER_INTERVAL, global_loop_timer_func, GLOBAL_LOOP_TIMER_ID);
+    glutTimerFunc(TIMER_INTERVAL, main_timer_func, MAIN_TIMER_ID);
     
     glutMainLoop();
 
@@ -181,6 +179,8 @@ static void change_y(int yy) {
 }
 
 static void mouse_motion(int xx, int yy) {
+    mm_xx = xx;
+    mm_yy = yy;
     angle_horizontal += delta_angle_horizontal;
     angle_vertical += detla_angle_vertical;
 
@@ -206,9 +206,13 @@ static void mouse_motion(int xx, int yy) {
     }
 }
 
+int k = 0;
 static void on_move(int value) {
     if (value != MOVE_TIMER_ID)
         return;
+
+    moving_state = 0;
+    printf("%d. x=%lf y=%lf z=%lf\n\tmm_xx=%d mm_yy=%d\n", k++, x, y, z, mm_xx, mm_yy);
 
     speed = num_of_pressed_keys == 2 ? speed1 : speed;
 
@@ -244,60 +248,45 @@ static void on_move(int value) {
     }
 
     glutPostRedisplay();
-
-    if (moving_state) {
-        moving_state = 0;
-        glutTimerFunc(TIMER_INTERVAL, on_jump, JUMP_TIMER_ID);
-    }
 }
 
+int i = 0;
 static void on_jump(int value) {
     if (value != JUMP_TIMER_ID)
         return;
     
-    if (y < jump_max - height_decrease && GO_UP == 1) {
-        // printf("Increasing height!!!");
+    if (y < jump_max - height_increase && GO_UP == 1) {
+        printf("Increasing height!!! y=%lf\n", y);
         y += height_increase;
     }
 
     // printf("[JUMP] goup=%d y=%lf jump_max=%lf\n", GO_UP, y, jump_max);
-    if ((y + 0.02 >= jump_max || y - 0.02 >= jump_max || y == jump_max) && y >= 1) {
+    if ((y + 0.1 >= jump_max || y - 0.1 >= jump_max || y == jump_max) && y >= 2) {
         GO_UP = 0;
+        printf("Changing goup\n");
     }
-    glutPostRedisplay();
 
-    if (jumping_animation) {
+    if (GO_UP) {
         glutTimerFunc(TIMER_INTERVAL, on_jump, JUMP_TIMER_ID);
-        jumping_animation = 0;
     }
+    jumping_animation = 0;
+    glutPostRedisplay();
 }
 
-static void global_loop_timer_func() {
-    // main_timer_active = 1;
-    if (!pause_pressed) {
-        glutTimerFunc(TIMER_INTERVAL, main_timer_func, MAIN_TIMER_ID);
-    }
 
-    glutTimerFunc(TIMER_INTERVAL, global_loop_timer_func, GLOBAL_LOOP_TIMER_ID);
-}
-
-// int i = 0;
 static void main_timer_func() {
-    // printf("[MAIN_TIMER] %d. tick tock\n", i++);
     main_timer_active = 0;
 
-    if (!moving_state) {
+    if (num_of_pressed_keys) {
         glutTimerFunc(TIMER_INTERVAL, on_move, MOVE_TIMER_ID);
         moving_state = 1;
     }
 
     if (y > 1 && !GO_UP) {
-        // printf("Should decrease height!\n");
+        printf("Should decrease height!\n");
         y -= height_decrease;
         glutPostRedisplay();
     }
-
-    printf("[MAIN_TIMER] pause=%d\n", pause_pressed);
 
     if (!main_timer_active && !pause_pressed) {
         glutTimerFunc(TIMER_INTERVAL, main_timer_func, MAIN_TIMER_ID);
@@ -306,10 +295,6 @@ static void main_timer_func() {
 }
 
 static void on_release(unsigned char key, int xx, int yy) {
-    // printf("-------------------------------------");
-    // printf("[ON_RELEASE] relesed key: %c\n", key);
-    // printf("[ON_RELEASE]\nkey_pressed[W] = %d\nkey_pressed[A] = %d\nkey_pressed[D] = %d\nkey_pressed[S] = %d\n", key_pressed[W], key_pressed[A], key_pressed[D], key_pressed[S]);
-    // printf("-------------------------------------");
     switch (key) {
         case 'W':
         case 'w':
@@ -330,9 +315,6 @@ static void on_release(unsigned char key, int xx, int yy) {
         case 'd':
             num_of_pressed_keys--;
             key_pressed[D] = 0;
-            break;
-        case 32:
-            space_pressed = 0;
             break;
     }
 
@@ -378,16 +360,15 @@ static void on_keyboard(unsigned char key, int xx, int yy) {
                 glutSetCursor(GLUT_CURSOR_NONE);
                 cursor_hidden = 1;
             }
-            break;
-        
-        
+            break;        
         case 32:
-        // TODO: jump
             printf("Space pressed!!!\n");
-            space_pressed = 1;
+            // printf("jumping_animation=%d\n", jumping_animation);
+            printf("y=%lf\n", y);
             if (!jumping_animation) {
-                glutTimerFunc(TIMER_INTERVAL, on_jump, JUMP_TIMER_ID);
                 jumping_animation = 1;
+                GO_UP = 1;
+                glutTimerFunc(TIMER_INTERVAL, on_jump, JUMP_TIMER_ID);
             }
             break;
         case 'F':
@@ -396,12 +377,14 @@ static void on_keyboard(unsigned char key, int xx, int yy) {
             break;
         case 'P':
         case 'p':
-            printf("on pressed p: pause=%d\n", pause_pressed);
-            if (pause_pressed)
-                pause_pressed = 0;
-            else {
-                pause_pressed = 1;
-                main_timer_active = 0;
+            pause_pressed = !pause_pressed;
+            if (pause_pressed) {
+                glutPassiveMotionFunc(NULL);
+            }
+            if (!pause_pressed) {
+                glutPassiveMotionFunc(mouse_motion);
+                glutTimerFunc(TIMER_INTERVAL, main_timer_func, MAIN_TIMER_ID);
+                main_timer_active = 1;
             }
             break;
     }
