@@ -12,14 +12,12 @@ extern void on_move(int value);
 extern void on_release(unsigned char key, int xx, int yy);
 extern void main_timer_func();
 
-extern void idle_func();
-
 #define M_PI acos(-1.0)
 #define TIMER_INTERVAL (20)
 
-#define JUMP_TIMER_ID 2 // timer for jumping animation
-#define MOVE_TIMER_ID 1 // timer for moving
-#define MAIN_TIMER_ID 0 // timer for time :D
+#define JUMP_TIMER_ID 2 // Timer za animaciju skoka
+#define MOVE_TIMER_ID 1 // Timer za kretanje
+#define MAIN_TIMER_ID 0 // Timer za vreme; pauziranje
 
 #define FORWARD 'w'
 #define LEFT 'a'

@@ -7,7 +7,7 @@
 
 int main_timer_active = 0;
 
-float x = 0.0f,z = 5.0f, y = 1.0f; // camera position in xz plane
+float x = 0.0f,z = 5.0f, y = 1.0f; // Pozicija kamere u xz ravni
 
 float speed = 0.1f;
 float speed1 = 0.05f;
@@ -43,11 +43,11 @@ float lookat_x, lookat_y, lookat_z;
 int MAX_ELEVATION_VAL = 100;
 
 int main(int argc, char **argv) {
-    // glutt initialising
+    // Inicijalizacija gluta
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_RGBA | GLUT_DEPTH | GLUT_DOUBLE);
 
-    // creating window
+    // Kreiranje prozora
     glutInitWindowSize(aspect * init_wheight, init_wheight);
     glutInitWindowPosition(0, 0);
     glutCreateWindow("shorka");
@@ -57,7 +57,7 @@ int main(int argc, char **argv) {
 
     glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
-    float light_position[] = {1, 1, 1, 0}; // light behind "head"
+    float light_position[] = {1, 1, 1, 0}; // Svetlo, iza desno iza glave
     float light_diffuse[] = {0.7f, 0.7f, 0.7f, 1}; 
     float light_ambient[] = {0.7f, 0.7f, 0.7f, 1};
     float light_specular[] = {0.7f, 0.7f, 0.7f, 1};
@@ -83,11 +83,10 @@ int main(int argc, char **argv) {
     glMaterialf(GL_FRONT, GL_SHININESS, shininess);
         
     jumping_animation = 0;
-    // registering callbacks
+    // Registrovanje callback funkcija
     glutDisplayFunc(render_scene);
     glutReshapeFunc(on_reshape);
     glutKeyboardFunc(on_keyboard);
-    // glutIdleFunc(idle_func);
     glutPassiveMotionFunc(on_mouse_look);
     glutMotionFunc(on_mouse_look);
     glutKeyboardUpFunc(on_release);
@@ -100,17 +99,12 @@ int main(int argc, char **argv) {
     return 0;
 }
 
-void idle_func() {
-    glutPostRedisplay();
-}
-
-// If mouse cannot leave window
 int mouse_fixed = 1;
 void on_mouse_look(int x, int y) {
     int current_width = glutGet(GLUT_WINDOW_WIDTH);
     int current_height = glutGet(GLUT_WINDOW_WIDTH);
 
-    // mis se ne pomera, nemoj da radis nista
+    // Mis se ne pomera, nemoj da radis nista
     if (x == current_width /2 && y == current_height/2) 
         return;
     
@@ -132,7 +126,8 @@ void on_mouse_look(int x, int y) {
     view_azymuth += delta_x * view_azdt * mouse_sens;
     view_elevetion -= delta_y * view_elevdt * mouse_sens;
 
-    // provera jel sve u granicama
+    // Provera jel sve u granicama
+    // Da se ne bi desavalo "izvrtanje vrednosti" kada se pogleda skroz gore/dole/levo/desno
     if (view_azymuth >= 360) {
         view_azymuth -= 360;
     }
@@ -149,6 +144,7 @@ void on_mouse_look(int x, int y) {
     }
 }
 
+// Funkcija koja se poziva kao callback timera za kretanje
 int k = 0;
 void on_move(int value) {
     if (value != MOVE_TIMER_ID)
@@ -157,8 +153,10 @@ void on_move(int value) {
     moving_state = 0;
     printf("%d. x=%lf y=%lf z=%lf\n\tmm_xx=%d mm_yy=%d\n", k++, x, y, z, mm_xx, mm_yy);
 
+    // Biram brzinu kretanja u zavisnosti od toga da li je kretanje samo pravo ili strafe
     float curr_speed = num_of_pressed_keys == 2 ? speed1 : speed;
 
+    // Uvecavanje odgovarajucih koordinata u zavisnosti od dugmeta koje je pritisnuto
     if (key_pressed[W]) {
         x += lookat_x * curr_speed;
         z += lookat_z * curr_speed; 
@@ -180,6 +178,7 @@ void on_move(int value) {
     // glutPostRedisplay();
 }
 
+// Funkcija koja se poziva kao callback za skok
 int i = 0;
 void on_jump(int value) {
     if (value != JUMP_TIMER_ID)
@@ -203,7 +202,7 @@ void on_jump(int value) {
     // glutPostRedisplay();
 }
 
-
+// Glavni tajmer
 void main_timer_func() {
     main_timer_active = 0;
 
@@ -226,6 +225,7 @@ void main_timer_func() {
     glutPostRedisplay();
 }
 
+// Kada se otpusti dugme, smanjuje se broj pritisnutih dugmica i potencijalno zaustavlja kretanje
 void on_release(unsigned char key, int xx, int yy) {
     switch (key) {
         case 'W':
@@ -257,31 +257,31 @@ void on_keyboard(unsigned char key, int xx, int yy) {
         case 27:
             exit(0);
             break;
-        // step left
+        // Kretanje ulevo
         case 'A':
         case 'a':
             num_of_pressed_keys++;
             key_pressed[A] = 1;
             break;
-        // step right
+        // Kretanje udesno
         case 'D':
         case 'd':
             num_of_pressed_keys++;
             key_pressed[D] = 1;
             break;
-        // step forward
+        // Kretanje napred
         case 'W':
         case 'w' :
             num_of_pressed_keys++;
             key_pressed[W] = 1;
 			break;
-        // step back
+        // Kretanje nazad
         case 'S':
         case 's' :
             num_of_pressed_keys++;
             key_pressed[S] = 1;
 			break;
-        // hiding cursor
+        // Oslobadjanje kursora; npr da bi moglo da se klikne nesto sto je van prozora igre
         case 'K':
         case 'k':
             if (mouse_fixed) {
@@ -292,7 +292,8 @@ void on_keyboard(unsigned char key, int xx, int yy) {
                 glutSetCursor(GLUT_CURSOR_NONE);
                 mouse_fixed = 1;
             }
-            break;        
+            break;  
+        // Skok; registruje se tajmer za animaciju skakanja
         case 32:
             printf("Space pressed!!!\n");
             // printf("jumping_animation=%d\n", jumping_animation);
@@ -303,10 +304,12 @@ void on_keyboard(unsigned char key, int xx, int yy) {
                 glutTimerFunc(TIMER_INTERVAL, on_jump, JUMP_TIMER_ID);
             }
             break;
+        // Ulazak/izlazak iz fullscreen rezima
         case 'F':
         case 'f':
             toggle_screen_size();
             break;
+        // Registrovanje glavnog tajmera; Sluzi za mogucnost pauziranja igre
         case 'P':
         case 'p':
             pause_pressed = !pause_pressed;
@@ -333,6 +336,7 @@ void toggle_screen_size() {
     }
 }
 
+// Funkcija koja se poziva kao callback promene prozora igre
 void on_reshape(int width, int height) {
     if (!FULL_SCREEN) {
         width = aspect * height;
@@ -350,6 +354,7 @@ void draw_object(void) {
     glutSolidCube(3);
 }
 
+// Pozicioniranje kamere i pogleda; Koriste se sferne koordinate, Analiza 3 :)
 void position_camera() {
     eye_x = x;
     eye_y = y;
@@ -367,6 +372,7 @@ void position_camera() {
             0, 1, 0);
 }
 
+// Funkcija koja se poziva kada treba da se prikaze scena
 void render_scene(void) {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
