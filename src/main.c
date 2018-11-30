@@ -15,7 +15,6 @@ float speed1 = 0.05f;
 double jump_max = 4.600000;
 int jumping_animation = 1;
 int GO_UP = 1;
-int GO_DOWN = 0;
 double height_increase =  0.3;
 double height_decrease = 0.1;
 int space_pressed = 0;
@@ -41,6 +40,7 @@ float mouse_sens = 0.01f;
 float prev_mouse_x = 500, prev_mouse_y = 500;
 float eye_x, eye_y, eye_z;
 float lookat_x, lookat_y, lookat_z;
+int MAX_ELEVATION_VAL = 100;
 
 int main(int argc, char **argv) {
     // glutt initialising
@@ -87,7 +87,7 @@ int main(int argc, char **argv) {
     glutDisplayFunc(render_scene);
     glutReshapeFunc(on_reshape);
     glutKeyboardFunc(on_keyboard);
-    glutIdleFunc(idle_func);
+    // glutIdleFunc(idle_func);
     glutPassiveMotionFunc(on_mouse_look);
     glutMotionFunc(on_mouse_look);
     glutKeyboardUpFunc(on_release);
@@ -105,7 +105,7 @@ void idle_func() {
 }
 
 // If mouse cannot leave window
-int release_mouse = 0;
+int mouse_fixed = 1;
 void on_mouse_look(int x, int y) {
     int current_width = glutGet(GLUT_WINDOW_WIDTH);
     int current_height = glutGet(GLUT_WINDOW_WIDTH);
@@ -116,7 +116,7 @@ void on_mouse_look(int x, int y) {
     
     float delta_x, delta_y;
 
-    if (release_mouse) {
+    if (!mouse_fixed) {
         delta_x = x - prev_mouse_x;
         delta_y = y - prev_mouse_y;
     }
@@ -141,12 +141,12 @@ void on_mouse_look(int x, int y) {
     }
 
     // glutPostRedisplay();
-    // if (view_elevetion > MAX_ELEVATION_VAL) {
-    //     view_elevetion = MAX_ELEVATION_VAL;
-    // }
-    // else if (view_elevetion < - MAX_ELEVATION_VAL) {
-    //     view_elevetion = -MAX_ELEVATION_VAL;
-    // }
+    if (view_elevetion > MAX_ELEVATION_VAL) {
+        view_elevetion = MAX_ELEVATION_VAL;
+    }
+    else if (view_elevetion < - MAX_ELEVATION_VAL) {
+        view_elevetion = -MAX_ELEVATION_VAL;
+    }
 }
 
 int k = 0;
@@ -157,24 +157,24 @@ void on_move(int value) {
     moving_state = 0;
     printf("%d. x=%lf y=%lf z=%lf\n\tmm_xx=%d mm_yy=%d\n", k++, x, y, z, mm_xx, mm_yy);
 
-    speed = num_of_pressed_keys == 2 ? speed1 : speed;
+    float curr_speed = num_of_pressed_keys == 2 ? speed1 : speed;
 
     if (key_pressed[W]) {
-        x += lookat_x * speed;
-        z += lookat_z * speed; 
+        x += lookat_x * curr_speed;
+        z += lookat_z * curr_speed; 
     }
     if (key_pressed[A]) {
-        x += lookat_z * speed;
-        z -= lookat_x * speed;
+        x += lookat_z * curr_speed;
+        z -= lookat_x * curr_speed;
     }
     if (key_pressed[S]) {
         key_pressed[S] = 1;
-        x -= lookat_x * speed;
-        z -= lookat_z * speed;
+        x -= lookat_x * curr_speed;
+        z -= lookat_z * curr_speed;
     }
     if (key_pressed[D]) {
-        x -= lookat_z * speed;
-        z += lookat_x * speed;
+        x -= lookat_z * curr_speed;
+        z += lookat_x * curr_speed;
     }
 
     // glutPostRedisplay();
@@ -222,6 +222,8 @@ void main_timer_func() {
         glutTimerFunc(TIMER_INTERVAL, main_timer_func, MAIN_TIMER_ID);
         main_timer_active = 1;
     }
+
+    glutPostRedisplay();
 }
 
 void on_release(unsigned char key, int xx, int yy) {
@@ -282,13 +284,13 @@ void on_keyboard(unsigned char key, int xx, int yy) {
         // hiding cursor
         case 'K':
         case 'k':
-            if (!release_mouse) {
+            if (mouse_fixed) {
                 glutSetCursor(GLUT_CURSOR_TOP_SIDE);
-                release_mouse = 1;
+                mouse_fixed = 0;
             }
             else {
                 glutSetCursor(GLUT_CURSOR_NONE);
-                release_mouse = 0;
+                mouse_fixed = 1;
             }
             break;        
         case 32:
