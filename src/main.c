@@ -55,6 +55,8 @@ double height_decrease = 0.1;
 int space_pressed = 0;
 
 int FULL_SCREEN = 0;
+int init_wheight = 800;
+float aspect = 16.0/9;
 
 int moving_state = 0;
 float step = 0.05f;
@@ -67,6 +69,13 @@ int pause_pressed = 0;
 int mm_xx = 0; // for debuging purposes
 int mm_yy = 0;
 
+float view_azdt = 5, view_elevdt = 3;
+float view_azymuth = 0, view_elevetion = 0;
+float mouse_sens = 0.01f;
+float prev_mouse_x = 500, prev_mouse_y = 500;
+float eye_x, eye_y, eye_z;
+float lookat_x, lookat_y, lookat_z;
+
 // -------------------------------------------------------------------------------------------
 
 // declarations of callback funcs
@@ -74,14 +83,17 @@ static void on_keyboard(unsigned char key, int xx, int yy);
 static void on_reshape(int width, int height);
 static void draw_object(void);
 static void render_scene(void);
-static void mouse_motion(int xx, int yy);
-static void change_x(int xx);
-static void change_y(int yy);
+
+static void on_mouse_look(int x, int y);
+static void position_camera();
+
 static void on_jump();
 static void toggle_screen_size();
 static void on_move(int value);
 static void on_release(unsigned char key, int xx, int yy);
 static void main_timer_func();
+
+// -------------------------------------------------------------------------------------------
 
 int main(int argc, char **argv) {
     // glutt initialising
@@ -89,8 +101,8 @@ int main(int argc, char **argv) {
     glutInitDisplayMode(GLUT_RGBA | GLUT_DEPTH | GLUT_DOUBLE);
 
     // creating window
-    glutInitWindowSize(window_width, window_height);
-    glutInitWindowPosition(100, 100);
+    glutInitWindowSize(aspect * init_wheight, init_wheight);
+    glutInitWindowPosition(0, 0);
     glutCreateWindow("shorka");
     glClearColor(0, 0, 0, 0);
 
@@ -128,7 +140,9 @@ int main(int argc, char **argv) {
     glutDisplayFunc(render_scene);
     glutReshapeFunc(on_reshape);
     glutKeyboardFunc(on_keyboard);
-    glutPassiveMotionFunc(mouse_motion);
+    
+    glutPassiveMotionFunc(on_mouse_look);
+    glutMotionFunc(on_mouse_look);
     glutKeyboardUpFunc(on_release);
     glutSetKeyRepeat(GLUT_KEY_REPEAT_OFF);
     main_timer_active = 1;
@@ -139,71 +153,49 @@ int main(int argc, char **argv) {
     return 0;
 }
 
-static void change_x(int xx) {
-    if (xx > prev_x) {
-        // printf("Looking right...\n");
+// If mouse cannot leave window
+int release_mouse = 0;
+static void on_mouse_look(int x, int y) {
+    int current_width = glutGet(GLUT_WINDOW_WIDTH);
+    int current_height = glutGet(GLUT_WINDOW_WIDTH);
 
-        delta_angle_horizontal = -(x - xx) * 0.00001f;
-    }
-    else if (xx < prev_x) {
-        // printf("Looking left...\n");
-        delta_angle_horizontal = -(x + xx) * 0.00001f;
-    }
-
-    lx = -sin((angle_horizontal + delta_angle_horizontal));
-    lz = cos((angle_horizontal + delta_angle_horizontal));
-
-    // theta = (angle_horizontal + delta_angle_horizontal);
-
-    // lx = -sin(theta) * cos(fi);
-    // lz = cos(theta);
-    glutPostRedisplay();
-}
-
-static void change_y(int yy) {
-    if (yy > prev_y) {
-        // printf("Looking down...\n");
-        detla_angle_vertical = -(y - yy) * 0.00001f;     
-    }
-    else if (yy < prev_y) {
-        // printf("Looking up...\n");
-        detla_angle_vertical = -(y + yy) * 0.00001f;
-    }
-    ly = -sin((angle_vertical + detla_angle_vertical));
-
-    // fi = (angle_vertical + detla_angle_vertical);
-
-    // ly = sin(theta) * sin(fi);
-
-    glutPostRedisplay();
-}
-
-static void mouse_motion(int xx, int yy) {
-    mm_xx = xx;
-    mm_yy = yy;
-    angle_horizontal += delta_angle_horizontal;
-    angle_vertical += detla_angle_vertical;
-
-    // rotating view
-    // if (xx != prev_x)
-    if (xx > window_width/3 && xx < 2*window_width/3) {
-        // printf("[X axis] Motion in x... x=%d, y=%d\n", xx, yy);
-        change_x(xx);
-        prev_x = xx;
-    }
-    else {
-        glutWarpPointer(window_width / 2, window_height / 2);
-    }
+    // mis se ne pomera, nemoj da radis nista
+    if (x == current_width /2 && y == current_height/2) 
+        return;
     
-    // if (yy != prev_y)
-    if (yy > window_height/3 && yy < 2*window_height/3) {
-        // printf("[Y axis] x=%d, y=%d\n", xx, yy);
-        change_y(yy);
-        prev_y = yy;
+    float delta_x, delta_y;
+
+    if (release_mouse) {
+        delta_x = x - prev_mouse_x;
+        delta_y = y - prev_mouse_y;
     }
     else {
-        glutWarpPointer(window_width / 2, window_height / 2);
+        delta_x = x - current_width/2;
+        delta_y = y - current_height/2;
+        glutWarpPointer(current_width/2, current_height/2);
     }
+
+    prev_mouse_x = x;
+    prev_mouse_y = y;
+
+    view_azymuth += delta_x * view_azdt * mouse_sens;
+    view_elevetion -= delta_y * view_elevdt * mouse_sens;
+
+    // provera jel sve u granicama
+    if (view_azymuth >= 360) {
+        view_azymuth -= 360;
+    }
+    else if (view_azymuth < 0) {
+        view_azymuth += 360;
+    }
+
+    glutPostRedisplay();
+    // if (view_elevetion > MAX_ELEVATION_VAL) {
+    //     view_elevetion = MAX_ELEVATION_VAL;
+    // }
+    // else if (view_elevetion < - MAX_ELEVATION_VAL) {
+    //     view_elevetion = -MAX_ELEVATION_VAL;
+    // }
 }
 
 int k = 0;
@@ -217,14 +209,14 @@ static void on_move(int value) {
     speed = num_of_pressed_keys == 2 ? speed1 : speed;
 
     if (key_pressed[W]) {
-        x += lx * speed;
-        y += ly * speed;
-        z += lz * speed; 
+        x += lookat_x * speed;
+        y += lookat_y * speed;
+        z += lookat_z * speed; 
         // printf("Up key pressed\n");
     }
     if (key_pressed[A]) {
-        x += lz * speed;
-        z -= lx * speed;
+        x += lookat_z * speed;
+        z -= lookat_x * speed;
         // printf("Left key pressed\n");
     }
     if (key_pressed[S]) {
@@ -232,9 +224,9 @@ static void on_move(int value) {
         // x -= lx * fraction;
         // z -= lz * fraction;
         // z -= step;
-        x -= lx * speed;
-        y -= ly * speed;
-        z -= lz * speed;
+        x -= lookat_x * speed;
+        y -= lookat_y * speed;
+        z -= lookat_z * speed;
         // printf("Down key pressed\n");
     }
     if (key_pressed[D]) {
@@ -242,8 +234,8 @@ static void on_move(int value) {
         // lx = sin(angle);
         // lz = -cos(angle);
         // x -= step;
-        x -= lz * speed;
-        z += lx * speed;
+        x -= lookat_z * speed;
+        z += lookat_x * speed;
         // printf("Right key pressed\n");
     }
 
@@ -352,13 +344,13 @@ static void on_keyboard(unsigned char key, int xx, int yy) {
         // hiding cursor
         case 'K':
         case 'k':
-            if (cursor_hidden) {
+            if (!release_mouse) {
                 glutSetCursor(GLUT_CURSOR_TOP_SIDE);
-                cursor_hidden = 0;
+                cursor_hidden = 1;
             }
             else {
                 glutSetCursor(GLUT_CURSOR_NONE);
-                cursor_hidden = 1;
+                cursor_hidden = 0;
             }
             break;        
         case 32:
@@ -382,7 +374,7 @@ static void on_keyboard(unsigned char key, int xx, int yy) {
                 glutPassiveMotionFunc(NULL);
             }
             if (!pause_pressed) {
-                glutPassiveMotionFunc(mouse_motion);
+                glutPassiveMotionFunc(on_mouse_look);
                 glutTimerFunc(TIMER_INTERVAL, main_timer_func, MAIN_TIMER_ID);
                 main_timer_active = 1;
             }
@@ -406,22 +398,38 @@ static void toggle_screen_size() {
 }
 
 static void on_reshape(int width, int height) {
+    if (!FULL_SCREEN) {
+        width = aspect * height;
+        glutReshapeWindow(width, height);
+    }
     // Setting viewport
     glViewport(0, 0, width, height);
-
     // saving current window height and width
-    window_height = height;
-    window_width = width;
-
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    gluPerspective(60, (float) width / height, 1, 1000);
+    gluPerspective(60, (float) width / height, 0.1, 1000);
 }
 
 static void draw_object(void) {
     glutSolidCube(3);
 }
 
+static void position_camera() {
+    eye_x = x;
+    eye_y = y;
+    eye_z = z;
+
+    float cos_fi = cos(M_PI * view_elevetion/180);
+    lookat_x = cos(M_PI * view_azymuth/180) * cos_fi;
+    lookat_z = sin(M_PI * view_azymuth/180) * cos_fi;
+
+    // gore dole
+    lookat_y = sin(M_PI * view_elevetion/180);
+
+    gluLookAt(eye_x, eye_y, eye_z,
+            lookat_x + eye_x, lookat_y + eye_y, lookat_z + eye_z,
+            0, 1, 0);
+}
 
 void render_scene(void) {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -431,9 +439,7 @@ void render_scene(void) {
 	glLoadIdentity();
 	
     // setting camera
-	gluLookAt(x, y, z,
-			x+lx, y+ly,  z+lz,
-			0.0f, 1.0f,  0.0f);
+    position_camera();
 
     // setting color for base
     glDisable(GL_LIGHTING);
