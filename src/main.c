@@ -2,49 +2,15 @@
 #include <math.h>
 #include <GL/glut.h>
 #include <stdio.h>
+#include "main.h"
 
-// constants
-#define M_PI acos(-1.0)
-#define TIMER_INTERVAL (20)
 
-#define JUMP_TIMER_ID 2 // timer for jumping animation
-#define MOVE_TIMER_ID 1 // timer for moving
-#define MAIN_TIMER_ID 0 // timer for time :D
-
-#define FORWARD 'w'
-#define LEFT 'a'
-#define BACK 's'
-#define RIGHT 'd'
-
-#define W 0
-#define A 1
-#define S 2
-#define D 3
-
-// -------------------------------------------------------------------------------------------
 int main_timer_active = 0;
 
-float angle_horizontal=0.0f; // angle of rotation aroung y axis
-float angle_vertical = 0.0f; // angle for looking up and down
-float lx = 0.0f, lz = 1.0f, ly = 0.0f;  // line of view
 float x = 0.0f,z = 5.0f, y = 1.0f; // camera position in xz plane
 
 float speed = 0.1f;
 float speed1 = 0.05f;
-float rot_speed = 0.0005f;
-
-int cursor_hidden = 0;
-
-float delta_angle_horizontal = 0.0f;
-float detla_angle_vertical = 0.0f;
-float theta = 0.0f;
-float fi = 0.0f;
-
-int window_width = 1200;
-int window_height = 800;
-
-int prev_x = 0;
-int prev_y = 0;
 
 double jump_max = 4.600000;
 int jumping_animation = 1;
@@ -75,25 +41,6 @@ float mouse_sens = 0.01f;
 float prev_mouse_x = 500, prev_mouse_y = 500;
 float eye_x, eye_y, eye_z;
 float lookat_x, lookat_y, lookat_z;
-
-// -------------------------------------------------------------------------------------------
-
-// declarations of callback funcs
-static void on_keyboard(unsigned char key, int xx, int yy);
-static void on_reshape(int width, int height);
-static void draw_object(void);
-static void render_scene(void);
-
-static void on_mouse_look(int x, int y);
-static void position_camera();
-
-static void on_jump();
-static void toggle_screen_size();
-static void on_move(int value);
-static void on_release(unsigned char key, int xx, int yy);
-static void main_timer_func();
-
-// -------------------------------------------------------------------------------------------
 
 int main(int argc, char **argv) {
     // glutt initialising
@@ -140,7 +87,7 @@ int main(int argc, char **argv) {
     glutDisplayFunc(render_scene);
     glutReshapeFunc(on_reshape);
     glutKeyboardFunc(on_keyboard);
-    
+    glutIdleFunc(idle_func);
     glutPassiveMotionFunc(on_mouse_look);
     glutMotionFunc(on_mouse_look);
     glutKeyboardUpFunc(on_release);
@@ -153,9 +100,13 @@ int main(int argc, char **argv) {
     return 0;
 }
 
+void idle_func() {
+    glutPostRedisplay();
+}
+
 // If mouse cannot leave window
 int release_mouse = 0;
-static void on_mouse_look(int x, int y) {
+void on_mouse_look(int x, int y) {
     int current_width = glutGet(GLUT_WINDOW_WIDTH);
     int current_height = glutGet(GLUT_WINDOW_WIDTH);
 
@@ -189,7 +140,7 @@ static void on_mouse_look(int x, int y) {
         view_azymuth += 360;
     }
 
-    glutPostRedisplay();
+    // glutPostRedisplay();
     // if (view_elevetion > MAX_ELEVATION_VAL) {
     //     view_elevetion = MAX_ELEVATION_VAL;
     // }
@@ -199,7 +150,7 @@ static void on_mouse_look(int x, int y) {
 }
 
 int k = 0;
-static void on_move(int value) {
+void on_move(int value) {
     if (value != MOVE_TIMER_ID)
         return;
 
@@ -210,40 +161,27 @@ static void on_move(int value) {
 
     if (key_pressed[W]) {
         x += lookat_x * speed;
-        y += lookat_y * speed;
         z += lookat_z * speed; 
-        // printf("Up key pressed\n");
     }
     if (key_pressed[A]) {
         x += lookat_z * speed;
         z -= lookat_x * speed;
-        // printf("Left key pressed\n");
     }
     if (key_pressed[S]) {
         key_pressed[S] = 1;
-        // x -= lx * fraction;
-        // z -= lz * fraction;
-        // z -= step;
         x -= lookat_x * speed;
-        y -= lookat_y * speed;
         z -= lookat_z * speed;
-        // printf("Down key pressed\n");
     }
     if (key_pressed[D]) {
-        // angle += 0.01f;
-        // lx = sin(angle);
-        // lz = -cos(angle);
-        // x -= step;
         x -= lookat_z * speed;
         z += lookat_x * speed;
-        // printf("Right key pressed\n");
     }
 
-    glutPostRedisplay();
+    // glutPostRedisplay();
 }
 
 int i = 0;
-static void on_jump(int value) {
+void on_jump(int value) {
     if (value != JUMP_TIMER_ID)
         return;
     
@@ -262,11 +200,11 @@ static void on_jump(int value) {
         glutTimerFunc(TIMER_INTERVAL, on_jump, JUMP_TIMER_ID);
     }
     jumping_animation = 0;
-    glutPostRedisplay();
+    // glutPostRedisplay();
 }
 
 
-static void main_timer_func() {
+void main_timer_func() {
     main_timer_active = 0;
 
     if (num_of_pressed_keys) {
@@ -286,7 +224,7 @@ static void main_timer_func() {
     }
 }
 
-static void on_release(unsigned char key, int xx, int yy) {
+void on_release(unsigned char key, int xx, int yy) {
     switch (key) {
         case 'W':
         case 'w':
@@ -312,7 +250,7 @@ static void on_release(unsigned char key, int xx, int yy) {
 
 }
 
-static void on_keyboard(unsigned char key, int xx, int yy) {
+void on_keyboard(unsigned char key, int xx, int yy) {
     switch (key) {
         case 27:
             exit(0);
@@ -346,11 +284,11 @@ static void on_keyboard(unsigned char key, int xx, int yy) {
         case 'k':
             if (!release_mouse) {
                 glutSetCursor(GLUT_CURSOR_TOP_SIDE);
-                cursor_hidden = 1;
+                release_mouse = 1;
             }
             else {
                 glutSetCursor(GLUT_CURSOR_NONE);
-                cursor_hidden = 0;
+                release_mouse = 0;
             }
             break;        
         case 32:
@@ -382,22 +320,18 @@ static void on_keyboard(unsigned char key, int xx, int yy) {
     }
 }
 
-static void toggle_screen_size() {
+void toggle_screen_size() {
     if (FULL_SCREEN == 0) {
         glutFullScreen();
         FULL_SCREEN = 1;
     }
     else {
-        glutReshapeWindow(window_height, window_width);
-        glViewport(0, 0, window_width, window_height);
-        gluPerspective(60, (float) window_width / window_height, 1, 1000);
-        glutPositionWindow(0,0);
-        glutPostRedisplay();
+        glutReshapeWindow(init_wheight * aspect, init_wheight);
         FULL_SCREEN = 0;
     }
 }
 
-static void on_reshape(int width, int height) {
+void on_reshape(int width, int height) {
     if (!FULL_SCREEN) {
         width = aspect * height;
         glutReshapeWindow(width, height);
@@ -410,11 +344,11 @@ static void on_reshape(int width, int height) {
     gluPerspective(60, (float) width / height, 0.1, 1000);
 }
 
-static void draw_object(void) {
+void draw_object(void) {
     glutSolidCube(3);
 }
 
-static void position_camera() {
+void position_camera() {
     eye_x = x;
     eye_y = y;
     eye_z = z;
