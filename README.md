@@ -10,3 +10,4 @@ First person igra.
 * **space** - skok
 
 * ***strafe*** odnosno dijagonalno kretanje, kombinacije gornjih.
+* **miš** - kretanje kamere
