@@ -7,6 +7,11 @@ typedef struct {
     float step;
 } Player;
 
+typedef struct {
+    int jumping;
+    int walking;
+} State;
+
 extern Player player;
 const float speed = 0.1f;
 const float speed1 = 0.05f;

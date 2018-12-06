@@ -5,6 +5,7 @@
 #include "main.h"
 #include "player.h"
 
+// dodaj sprint, duck
 Player player = {
     .pos_x = 0.0f,
     .pos_y = 2.0f,
@@ -13,11 +14,15 @@ Player player = {
     .step = 0.05f
 };
 
+State player_state = {
+    .walking = 0,
+    .jumping = 0
+};
+
 int main_timer_active = 0;
 
 double jump_max = 4.00000;
 int jumping_animation = 1;
-int GO_UP = 1;
 double height_increase =  0.2;
 double height_decrease = 0.1;
 int space_pressed = 0;
@@ -26,7 +31,6 @@ int FULL_SCREEN = 0;
 int init_wheight = 800;
 float aspect = 16.0/9;
 
-int moving_state = 0;
 char moving_keys[] = {FORWARD, LEFT, BACK, RIGHT};
 int key_pressed[] = {0, 0, 0, 0}; 
 int num_of_pressed_keys = 0;
@@ -144,7 +148,7 @@ void on_move(int value) {
     if (value != MOVE_TIMER_ID)
         return;
 
-    moving_state = 0;
+    player_state.walking = 0;
 
     // Biram brzinu kretanja u zavisnosti od toga da li je kretanje samo pravo ili strafe
     player.curr_speed = num_of_pressed_keys == 2 ? speed1 : speed;
@@ -174,15 +178,15 @@ void on_jump(int value) {
     if (value != JUMP_TIMER_ID)
         return;
     
-    if (player.pos_y < jump_max && GO_UP == 1) {
+    if (player.pos_y < jump_max && player_state.jumping) {
         player.pos_y += height_increase;
     }
 
     if ((player.pos_y + 0.1 >= jump_max || player.pos_y - 0.1 >= jump_max || player.pos_y == jump_max) && player.pos_y >= 2) {
-        GO_UP = 0;
+        player_state.jumping = 0;
     }
 
-    if (GO_UP) {
+    if (player_state.jumping) {
         glutTimerFunc(TIMER_INTERVAL, on_jump, JUMP_TIMER_ID);
     }
     jumping_animation = 0;
@@ -194,11 +198,11 @@ void main_timer_func() {
 
     if (num_of_pressed_keys) {
         glutTimerFunc(TIMER_INTERVAL, on_move, MOVE_TIMER_ID);
-        moving_state = 1;
+        player_state.walking = 1;
     }
 
     // Uradi sa state jumping itd..
-    if (player.pos_y > 2 && !GO_UP) {
+    if (player.pos_y > 2 && !player_state.jumping) {
         player.pos_y -= height_decrease;
         glutPostRedisplay();
     }
@@ -282,9 +286,9 @@ void on_keyboard(unsigned char key, int xx, int yy) {
         // Skok; registruje se tajmer za animaciju skakanja
         case 32:
             // Ako player nije na podu ne moze opet da skoci; <=2.0f zbog greske u racunu, srediti ovo
-            if (!jumping_animation && player.pos_y <= 2.0f) {
+            if (!jumping_animation && player.pos_y <= 2.0f && !player_state.jumping) {
                 jumping_animation = 1;
-                GO_UP = 1;
+                player_state.jumping = 1;
                 glutTimerFunc(TIMER_INTERVAL, on_jump, JUMP_TIMER_ID);
             }
             break;
