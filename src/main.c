@@ -5,7 +5,7 @@
 #include "main.h"
 #include "player.h"
 
-// dodaj sprint, duck
+
 Player player = {
     .pos_x = 0.0f,
     .pos_y = 2.0f,
@@ -14,37 +14,18 @@ Player player = {
     .step = 0.05f
 };
 
+// dodaj sprint, duck
 State player_state = {
     .walking = 0,
     .jumping = 0
 };
 
-int main_timer_active = 0;
-
-double jump_max = 4.00000;
-int jumping_animation = 1;
-double height_increase =  0.2;
-double height_decrease = 0.1;
-int space_pressed = 0;
-
-int FULL_SCREEN = 0;
-int init_wheight = 800;
-float aspect = 16.0/9;
-
-char moving_keys[] = {FORWARD, LEFT, BACK, RIGHT};
-int key_pressed[] = {0, 0, 0, 0}; 
-int num_of_pressed_keys = 0;
-
-int pause_pressed = 0;
-
-float view_azdt = 5, view_elevdt = 3;
-float view_azymuth = 0, view_elevetion = 0;
-float mouse_sens = 0.01f;
-float prev_mouse_x = 500, prev_mouse_y = 500;
 float eye_x, eye_y, eye_z;
 float lookat_x, lookat_y, lookat_z;
-int MAX_ELEVATION_VAL = 100;
 
+
+// U SVE POMERAJE CE ICI dt, TJ RAZLIKA IZMEDJU DVA POZIVA TIMERA
+// ZBOG RAZLIKE U BRZINAMA RACUNARA
 int main(int argc, char **argv) {
     // Inicijalizacija gluta
     glutInit(&argc, argv);
@@ -80,7 +61,6 @@ int main(int argc, char **argv) {
     glMaterialfv(GL_FRONT, GL_SPECULAR, material_specular);
     glMaterialf(GL_FRONT, GL_SHININESS, shininess);
         
-    jumping_animation = 0;
     // Registrovanje callback funkcija
     glutDisplayFunc(render_scene);
     glutReshapeFunc(on_reshape);
@@ -145,6 +125,7 @@ void on_mouse_look(int x, int y) {
 // Funkcija koja se poziva kao callback timera za kretanje
 int k = 0;
 void on_move(int value) {
+    
     if (value != MOVE_TIMER_ID)
         return;
 
@@ -189,7 +170,6 @@ void on_jump(int value) {
     if (player_state.jumping) {
         glutTimerFunc(TIMER_INTERVAL, on_jump, JUMP_TIMER_ID);
     }
-    jumping_animation = 0;
 }
 
 // Glavni tajmer
@@ -286,8 +266,7 @@ void on_keyboard(unsigned char key, int xx, int yy) {
         // Skok; registruje se tajmer za animaciju skakanja
         case 32:
             // Ako player nije na podu ne moze opet da skoci; <=2.0f zbog greske u racunu, srediti ovo
-            if (!jumping_animation && player.pos_y <= 2.0f && !player_state.jumping) {
-                jumping_animation = 1;
+            if (player.pos_y <= 2.0f && !player_state.jumping) {
                 player_state.jumping = 1;
                 glutTimerFunc(TIMER_INTERVAL, on_jump, JUMP_TIMER_ID);
             }
@@ -330,9 +309,8 @@ void on_reshape(int width, int height) {
         width = aspect * height;
         glutReshapeWindow(width, height);
     }
-    // Setting viewport
+    // Postavljanje viewporta
     glViewport(0, 0, width, height);
-    // saving current window height and width
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     gluPerspective(60, (float) width / height, 0.1, 1000);
@@ -349,10 +327,12 @@ void position_player_view() {
     eye_z = player.pos_z;
 
     float cos_fi = cos(M_PI * view_elevetion/180);
+
+    // "Rotacija levo desno"
     lookat_x = cos(M_PI * view_azymuth/180) * cos_fi;
     lookat_z = sin(M_PI * view_azymuth/180) * cos_fi;
 
-    // gore dole
+    // "Rotacija gore dole"
     lookat_y = sin(M_PI * view_elevetion/180);
 
     gluLookAt(eye_x, eye_y, eye_z,
