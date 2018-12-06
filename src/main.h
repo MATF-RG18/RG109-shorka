@@ -19,6 +19,8 @@ extern void main_timer_func();
 #define MOVE_TIMER_ID 1 // Timer za kretanje
 #define MAIN_TIMER_ID 0 // Timer za vreme; pauziranje
 
+
+// Makroi za lakse baratanje nizovim
 #define FORWARD 'w'
 #define LEFT 'a'
 #define BACK 's'

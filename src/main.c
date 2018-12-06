@@ -3,19 +3,22 @@
 #include <GL/glut.h>
 #include <stdio.h>
 #include "main.h"
+#include "player.h"
 
+Player player = {
+    .pos_x = 0.0f,
+    .pos_y = 2.0f,
+    .pos_z = 5.0f,
+    .curr_speed = 0,
+    .step = 0.05f
+};
 
 int main_timer_active = 0;
 
-float x = 0.0f,z = 5.0f, y = 1.0f; // Pozicija kamere u xz ravni
-
-float speed = 0.1f;
-float speed1 = 0.05f;
-
-double jump_max = 4.600000;
+double jump_max = 4.00000;
 int jumping_animation = 1;
 int GO_UP = 1;
-double height_increase =  0.3;
+double height_increase =  0.2;
 double height_decrease = 0.1;
 int space_pressed = 0;
 
@@ -24,15 +27,11 @@ int init_wheight = 800;
 float aspect = 16.0/9;
 
 int moving_state = 0;
-float step = 0.05f;
 char moving_keys[] = {FORWARD, LEFT, BACK, RIGHT};
 int key_pressed[] = {0, 0, 0, 0}; 
 int num_of_pressed_keys = 0;
 
 int pause_pressed = 0;
-
-int mm_xx = 0; // for debuging purposes
-int mm_yy = 0;
 
 float view_azdt = 5, view_elevdt = 3;
 float view_azymuth = 0, view_elevetion = 0;
@@ -61,11 +60,6 @@ int main(int argc, char **argv) {
     float light_diffuse[] = {0.7f, 0.7f, 0.7f, 1}; 
     float light_ambient[] = {0.7f, 0.7f, 0.7f, 1};
     float light_specular[] = {0.7f, 0.7f, 0.7f, 1};
-
-    // float material_diffuse[] = {0.57647f, 0.439216f,  0.858824, 1};
-    // float material_ambient[] = {0, 0, 0, 1};
-    // float material_specular[] = {0.4f, 0.7f, 0.7f, 1};
-    // float shininess = 25;
 
     float material_diffuse[] = {0.5f, 0.4f,  0.4f, 1};
     float material_ambient[] = {0.05f, 0, 0, 1};
@@ -151,48 +145,48 @@ void on_move(int value) {
         return;
 
     moving_state = 0;
-    printf("%d. x=%lf y=%lf z=%lf\n\tmm_xx=%d mm_yy=%d\n", k++, x, y, z, mm_xx, mm_yy);
 
     // Biram brzinu kretanja u zavisnosti od toga da li je kretanje samo pravo ili strafe
-    float curr_speed = num_of_pressed_keys == 2 ? speed1 : speed;
+    player.curr_speed = num_of_pressed_keys == 2 ? speed1 : speed;
 
     // Uvecavanje odgovarajucih koordinata u zavisnosti od dugmeta koje je pritisnuto
     if (key_pressed[W]) {
-        x += lookat_x * curr_speed;
-        z += lookat_z * curr_speed; 
+        player.pos_x += lookat_x * player.curr_speed;
+        player.pos_z += lookat_z * player.curr_speed; 
     }
     if (key_pressed[A]) {
-        x += lookat_z * curr_speed;
-        z -= lookat_x * curr_speed;
+        player.pos_x += lookat_z * player.curr_speed;
+        player.pos_z -= lookat_x * player.curr_speed;
     }
     if (key_pressed[S]) {
-        key_pressed[S] = 1;
-        x -= lookat_x * curr_speed;
-        z -= lookat_z * curr_speed;
+        // key_pressed[S] = 1;
+        player.pos_x -= lookat_x * player.curr_speed;
+        player.pos_z -= lookat_z * player.curr_speed;
     }
     if (key_pressed[D]) {
-        x -= lookat_z * curr_speed;
-        z += lookat_x * curr_speed;
+        player.pos_x -= lookat_z * player.curr_speed;
+        player.pos_z += lookat_x * player.curr_speed;
     }
 
     // glutPostRedisplay();
 }
 
+// FIX BUG!
 // Funkcija koja se poziva kao callback za skok
 int i = 0;
 void on_jump(int value) {
     if (value != JUMP_TIMER_ID)
         return;
     
-    if (y < jump_max - height_increase && GO_UP == 1) {
-        printf("Increasing height!!! y=%lf\n", y);
-        y += height_increase;
+    if (player.pos_y < jump_max && GO_UP == 1) {
+        // printf("Increasing height!!! player y=%lf\n", player.pos_y);
+        player.pos_y += height_increase;
     }
 
     // printf("[JUMP] goup=%d y=%lf jump_max=%lf\n", GO_UP, y, jump_max);
-    if ((y + 0.1 >= jump_max || y - 0.1 >= jump_max || y == jump_max) && y >= 2) {
+    if ((player.pos_y + 0.1 >= jump_max || player.pos_y - 0.1 >= jump_max || player.pos_y == jump_max) && player.pos_y >= 2) {
         GO_UP = 0;
-        printf("Changing goup\n");
+        // printf("Changing goup\n");
     }
 
     if (GO_UP) {
@@ -211,9 +205,10 @@ void main_timer_func() {
         moving_state = 1;
     }
 
-    if (y > 1 && !GO_UP) {
-        printf("Should decrease height!\n");
-        y -= height_decrease;
+    // Uradi sa state jumping itd..
+    if (player.pos_y > 2 && !GO_UP) {
+        // printf("Should decrease height!\n");
+        player.pos_y -= height_decrease;
         glutPostRedisplay();
     }
 
@@ -295,10 +290,11 @@ void on_keyboard(unsigned char key, int xx, int yy) {
             break;  
         // Skok; registruje se tajmer za animaciju skakanja
         case 32:
-            printf("Space pressed!!!\n");
+            // printf("Space pressed!!!\n");
             // printf("jumping_animation=%d\n", jumping_animation);
-            printf("y=%lf\n", y);
-            if (!jumping_animation) {
+            // printf("player y=%lf\n", player.pos_y);
+            // Ako player nije na podu ne moze opet da skoci; <=2.0f zbog greske u racunu, srediti ovo
+            if (!jumping_animation && player.pos_y <= 2.0f) {
                 jumping_animation = 1;
                 GO_UP = 1;
                 glutTimerFunc(TIMER_INTERVAL, on_jump, JUMP_TIMER_ID);
@@ -356,9 +352,9 @@ void draw_object(void) {
 
 // Pozicioniranje kamere i pogleda; Koriste se sferne koordinate, Analiza 3 :)
 void position_camera() {
-    eye_x = x;
-    eye_y = y;
-    eye_z = z;
+    eye_x = player.pos_x;
+    eye_y = player.pos_y;
+    eye_z = player.pos_z;
 
     float cos_fi = cos(M_PI * view_elevetion/180);
     lookat_x = cos(M_PI * view_azymuth/180) * cos_fi;
