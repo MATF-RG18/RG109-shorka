@@ -1,5 +1,6 @@
 ### RG109-shorka
 First person igra.
+Cilj izaci iz lavirinta "ziv".
 
 ## Kontrole:
 
