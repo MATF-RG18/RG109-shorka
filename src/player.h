@@ -1,5 +1,5 @@
 #include <stdio.h>
-
+// Struktura koja predstavlja igraca
 typedef struct {
     float pos_x, pos_y, pos_z;
     float vx, vy, vz;

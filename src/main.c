@@ -159,7 +159,6 @@ void on_move(int value) {
         player.pos_z -= lookat_x * player.curr_speed;
     }
     if (key_pressed[S]) {
-        // key_pressed[S] = 1;
         player.pos_x -= lookat_x * player.curr_speed;
         player.pos_z -= lookat_z * player.curr_speed;
     }
@@ -167,11 +166,8 @@ void on_move(int value) {
         player.pos_x -= lookat_z * player.curr_speed;
         player.pos_z += lookat_x * player.curr_speed;
     }
-
-    // glutPostRedisplay();
 }
 
-// FIX BUG!
 // Funkcija koja se poziva kao callback za skok
 int i = 0;
 void on_jump(int value) {
@@ -179,21 +175,17 @@ void on_jump(int value) {
         return;
     
     if (player.pos_y < jump_max && GO_UP == 1) {
-        // printf("Increasing height!!! player y=%lf\n", player.pos_y);
         player.pos_y += height_increase;
     }
 
-    // printf("[JUMP] goup=%d y=%lf jump_max=%lf\n", GO_UP, y, jump_max);
     if ((player.pos_y + 0.1 >= jump_max || player.pos_y - 0.1 >= jump_max || player.pos_y == jump_max) && player.pos_y >= 2) {
         GO_UP = 0;
-        // printf("Changing goup\n");
     }
 
     if (GO_UP) {
         glutTimerFunc(TIMER_INTERVAL, on_jump, JUMP_TIMER_ID);
     }
     jumping_animation = 0;
-    // glutPostRedisplay();
 }
 
 // Glavni tajmer
@@ -207,7 +199,6 @@ void main_timer_func() {
 
     // Uradi sa state jumping itd..
     if (player.pos_y > 2 && !GO_UP) {
-        // printf("Should decrease height!\n");
         player.pos_y -= height_decrease;
         glutPostRedisplay();
     }
@@ -290,9 +281,6 @@ void on_keyboard(unsigned char key, int xx, int yy) {
             break;  
         // Skok; registruje se tajmer za animaciju skakanja
         case 32:
-            // printf("Space pressed!!!\n");
-            // printf("jumping_animation=%d\n", jumping_animation);
-            // printf("player y=%lf\n", player.pos_y);
             // Ako player nije na podu ne moze opet da skoci; <=2.0f zbog greske u racunu, srediti ovo
             if (!jumping_animation && player.pos_y <= 2.0f) {
                 jumping_animation = 1;
@@ -351,7 +339,7 @@ void draw_object(void) {
 }
 
 // Pozicioniranje kamere i pogleda; Koriste se sferne koordinate, Analiza 3 :)
-void position_camera() {
+void position_player_view() {
     eye_x = player.pos_x;
     eye_y = player.pos_y;
     eye_z = player.pos_z;
@@ -376,10 +364,10 @@ void render_scene(void) {
 	
 	glLoadIdentity();
 	
-    // setting camera
-    position_camera();
+    // Podesavanje pogleda igraca
+    position_player_view();
 
-    // setting color for base
+    // Podesavanje boje za bazu
     glDisable(GL_LIGHTING);
     glColor3f(0.22f, 0.69f, 0.87f);
 	glBegin(GL_QUADS);
@@ -390,7 +378,7 @@ void render_scene(void) {
 	glEnd();
     glEnable(GL_LIGHTING);
 
-    // drawing 36 cubes for debug :)
+    // Objekti za debug kretanja
     for(int i = -3; i < 3; i++)
 		for(int j=-3; j < 3; j++) {
 			glPushMatrix();
