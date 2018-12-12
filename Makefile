@@ -4,14 +4,16 @@ CFLAGS  = -g -std=c99 -Wall -I/usr/X11R6/include -I/usr/pkg/include
 LDFLAGS = -L/usr/X11R6/lib -L/usr/pkg/lib
 LDLIBS  = -lglut -lGLU -lGL -lm
 
-$(PROGRAM): scene.o main.o
-	$(CC) scene.o main.o -o $(PROGRAM) $(LDLIBS) $(LDFLAGS)
+$(PROGRAM): scene.o main.o player.o
+	$(CC) scene.o main.o player.o -o $(PROGRAM) $(LDLIBS) $(LDFLAGS)
 
 scene.o: src/scene.c src/scene.h
 	$(CC) -c $(LDFLAGS) $(CFLAGS) src/scene.c -o scene.o $(LDLIBS) $(LDFLAGS)
 
+player.o: src/player.c src/player.h 
+	$(CC) -c $(LDFLAGS) $(CFLAGS) src/player.c -o player.o $(LDLIBS) $(LDFLAGS)
 
-main.o: src/main.c src/main.h src/player.h
+main.o: src/main.c src/player.h
 	$(CC) -c $(LDFLAGS) $(CFLAGS) src/main.c -o main.o $(LDLIBS) $(LDFLAGS)
 
 .PHONY: clean dist

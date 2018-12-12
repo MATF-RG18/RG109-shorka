@@ -2,28 +2,9 @@
 #include <math.h>
 #include <GL/glut.h>
 #include <stdio.h>
-#include "main.h"
+
 #include "player.h"
 #include "scene.h"
-
-Player player = {
-    .pos_x = 0.0f,
-    .pos_y = 2.0f,
-    .pos_z = 0.0f,
-    .curr_speed = 0,
-    .step = 0.05f,
-    .base_y = 0
-};
-
-// dodaj sprint, duck
-State player_state = {
-    .walking = 0,
-    .jumping = 0
-};
-
-float eye_x, eye_y, eye_z;
-float lookat_x, lookat_y, lookat_z;
-
 
 // U SVE POMERAJE CE ICI dt, TJ RAZLIKA IZMEDJU DVA POZIVA TIMERA
 // ZBOG RAZLIKE U BRZINAMA RACUNARA
@@ -63,7 +44,7 @@ int main(int argc, char **argv) {
     glMaterialf(GL_FRONT, GL_SHININESS, shininess);
         
     // Registrovanje callback funkcija
-    glutDisplayFunc(render_scene);
+    glutDisplayFunc(on_display_func);
     glutReshapeFunc(on_reshape);
     glutKeyboardFunc(on_keyboard);
     glutPassiveMotionFunc(on_mouse_look);
@@ -120,58 +101,6 @@ void on_mouse_look(int x, int y) {
     }
     else if (view_elevetion < - MAX_ELEVATION_VAL) {
         view_elevetion = -MAX_ELEVATION_VAL;
-    }
-}
-
-// Funkcija koja se poziva kao callback timera za kretanje
-int k = 0;
-void on_move(int value) {
-    
-    if (value != MOVE_TIMER_ID)
-        return;
-
-    player_state.walking = 0;
-
-    // Biram brzinu kretanja u zavisnosti od toga da li je kretanje samo pravo ili strafe
-    player.curr_speed = num_of_pressed_keys == 2 ? speed1 : speed;
-
-    // Uvecavanje odgovarajucih koordinata u zavisnosti od dugmeta koje je pritisnuto
-    if (key_pressed[W]) {
-        player.pos_x += lookat_x * player.curr_speed;
-        player.pos_z += lookat_z * player.curr_speed; 
-    }
-    if (key_pressed[A]) {
-        player.pos_x += lookat_z * player.curr_speed;
-        player.pos_z -= lookat_x * player.curr_speed;
-    }
-    if (key_pressed[S]) {
-        player.pos_x -= lookat_x * player.curr_speed;
-        player.pos_z -= lookat_z * player.curr_speed;
-    }
-    if (key_pressed[D]) {
-        player.pos_x -= lookat_z * player.curr_speed;
-        player.pos_z += lookat_x * player.curr_speed;
-    }
-}
-
-// Funkcija koja se poziva kao callback za skok
-int i = 0;
-void on_jump(int value) {
-    if (value != JUMP_TIMER_ID)
-        return;
-    
-    if (player.pos_y < jump_max && player_state.jumping) {
-        player.pos_y += height_increase;
-    }
-
-    if ((player.pos_y + 0.1 >= jump_max || 
-        player.pos_y - 0.1 >= jump_max || 
-        player.pos_y == jump_max) && player.pos_y >= player.base_y + 2) {
-        player_state.jumping = 0;
-    }
-
-    if (player_state.jumping) {
-        glutTimerFunc(TIMER_INTERVAL, on_jump, JUMP_TIMER_ID);
     }
 }
 
@@ -318,28 +247,8 @@ void on_reshape(int width, int height) {
     gluPerspective(60, (float) width / height, 0.1, 1000);
 }
 
-// Pozicioniranje kamere i pogleda; Koriste se sferne koordinate, Analiza 3 :)
-void position_player_view() {
-    eye_x = player.pos_x;
-    eye_y = player.pos_y;
-    eye_z = player.pos_z;
-
-    float cos_fi = cos(M_PI * view_elevetion/180);
-
-    // "Rotacija levo desno"
-    lookat_x = cos(M_PI * view_azymuth/180) * cos_fi;
-    lookat_z = sin(M_PI * view_azymuth/180) * cos_fi;
-
-    // "Rotacija gore dole"
-    lookat_y = sin(M_PI * view_elevetion/180);
-
-    gluLookAt(eye_x, eye_y, eye_z,
-            lookat_x + eye_x, lookat_y + eye_y, lookat_z + eye_z,
-            0, 1, 0);
-}
-
 // Funkcija koja se poziva kada treba da se prikaze scena
-void render_scene(void) {
+void on_display_func(void) {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glMatrixMode(GL_MODELVIEW);
