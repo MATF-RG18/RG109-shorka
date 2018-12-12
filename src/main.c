@@ -9,7 +9,7 @@
 Player player = {
     .pos_x = 0.0f,
     .pos_y = 2.0f,
-    .pos_z = 5.0f,
+    .pos_z = 0.0f,
     .curr_speed = 0,
     .step = 0.05f,
     .base_y = 0

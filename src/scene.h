@@ -3,11 +3,12 @@
 #include <GL/glut.h>
 #include <math.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 typedef struct {
-    float x;
-    float y;
-    float z;
+    float pos_x;
+    float pos_y;
+    float pos_z;
 } Object;
 
 extern void draw_scene(void);
