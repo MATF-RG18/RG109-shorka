@@ -1,4 +1,6 @@
 // Makroi za lakse baratanje nizovim
+#ifndef MAIN_H
+#define MAIN_H
 #define FORWARD 'w'
 #define LEFT 'a'
 #define BACK 's'
@@ -19,7 +21,6 @@
 
 extern void on_keyboard(unsigned char key, int xx, int yy);
 extern void on_reshape(int width, int height);
-extern void draw_object(void);
 extern void render_scene(void);
 
 extern void on_mouse_look(int x, int y);
@@ -43,7 +44,6 @@ int main_timer_active = 0;
 double jump_max = 4.00000;
 double height_increase =  0.2;
 double height_decrease = 0.1;
-int space_pressed = 0;
 
 int FULL_SCREEN = 0;
 int init_wheight = 800;
@@ -54,7 +54,6 @@ int key_pressed[] = {0, 0, 0, 0};
 int num_of_pressed_keys = 0;
 
 int pause_pressed = 0;
-
-
+#endif
 
 

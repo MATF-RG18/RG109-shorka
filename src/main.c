@@ -4,14 +4,15 @@
 #include <stdio.h>
 #include "main.h"
 #include "player.h"
-
+#include "scene.h"
 
 Player player = {
     .pos_x = 0.0f,
     .pos_y = 2.0f,
     .pos_z = 5.0f,
     .curr_speed = 0,
-    .step = 0.05f
+    .step = 0.05f,
+    .base_y = 0
 };
 
 // dodaj sprint, duck
@@ -163,7 +164,9 @@ void on_jump(int value) {
         player.pos_y += height_increase;
     }
 
-    if ((player.pos_y + 0.1 >= jump_max || player.pos_y - 0.1 >= jump_max || player.pos_y == jump_max) && player.pos_y >= 2) {
+    if ((player.pos_y + 0.1 >= jump_max || 
+        player.pos_y - 0.1 >= jump_max || 
+        player.pos_y == jump_max) && player.pos_y >= player.base_y + 2) {
         player_state.jumping = 0;
     }
 
@@ -181,8 +184,7 @@ void main_timer_func() {
         player_state.walking = 1;
     }
 
-    // Uradi sa state jumping itd..
-    if (player.pos_y > 2 && !player_state.jumping) {
+    if (player.pos_y > 2 + player.base_y && !player_state.jumping) {
         player.pos_y -= height_decrease;
         glutPostRedisplay();
     }
@@ -316,10 +318,6 @@ void on_reshape(int width, int height) {
     gluPerspective(60, (float) width / height, 0.1, 1000);
 }
 
-void draw_object(void) {
-    glutSolidCube(3);
-}
-
 // Pozicioniranje kamere i pogleda; Koriste se sferne koordinate, Analiza 3 :)
 void position_player_view() {
     eye_x = player.pos_x;
@@ -363,13 +361,8 @@ void render_scene(void) {
     glEnable(GL_LIGHTING);
 
     // Objekti za debug kretanja
-    for(int i = -3; i < 3; i++)
-		for(int j=-3; j < 3; j++) {
-			glPushMatrix();
-			glTranslatef(i * 10.0, 1.5f, j * 10.0);
-			draw_object();
-			glPopMatrix();
-		}
+    draw_scene();
+    
 
 	glutSwapBuffers();
 }
