@@ -7,7 +7,7 @@
 Object objects_for_scene[OBJECT_NUM];
 
 void draw_scene() {
-    glScalef(2, 2, 2);
+    glScalef(4, 4, 4);
     glPushMatrix();
     glTranslatef(20.0f, 0.0f, 0.0f);
     // Zid ispred igraca

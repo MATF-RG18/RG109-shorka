@@ -15,6 +15,7 @@ typedef struct {
 typedef struct {
     int jumping;
     int walking;
+    int sprint;
 } State;
 
 extern Player player;

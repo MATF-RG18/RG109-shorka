@@ -3,7 +3,7 @@
 
 Player player = {
     .pos_x = 0.0f,
-    .pos_y = 2.0f,
+    .pos_y = 4.0f,
     .pos_z = 0.0f,
     .curr_speed = 0,
     .step = 0.05f,
@@ -13,7 +13,8 @@ Player player = {
 // dodaj sprint, duck
 State player_state = {
     .walking = 0,
-    .jumping = 0
+    .jumping = 0,
+    .sprint = 0
 };
 
 const float view_azdt = 5, view_elevdt = 3;
@@ -28,12 +29,8 @@ int main_timer_active = 0;
 double jump_max = 4.00000;
 double height_increase =  0.2;
 double height_decrease = 0.1;
- 
-int FULL_SCREEN = 0;
-int init_wheight = 800;
-float aspect = 16.0/9;
- 
-char moving_keys[] = {FORWARD, LEFT, BACK, RIGHT};
+
+char moving_keys[] = {FORWARD, LEFT, BACK, RIGHT, SHIFT};
 int key_pressed[] = {0, 0, 0, 0}; 
 int num_of_pressed_keys = 0;
  
@@ -47,14 +44,19 @@ float lookat_x, lookat_y, lookat_z;
 
 // Funkcija koja se poziva kao callback timera za kretanje
 void on_move(int value) {
-    
     if (value != MOVE_TIMER_ID)
         return;
 
     player_state.walking = 0;
+    // player_state.sprint = key_pressed[SHIFT] == 1 ? 1 : 0;
 
     // Biram brzinu kretanja u zavisnosti od toga da li je kretanje samo pravo ili strafe
     player.curr_speed = num_of_pressed_keys == 2 ? speed1 : speed;
+
+    // Po potrebi uvecavam brzinu ako je player u stanju sprint
+    // player.curr_speed = key_pressed[SHIFT] ? player.curr_speed * 2.5 : player.curr_speed;
+
+    // printf("----speed=%lf sprint=%d shift=%d\n", player.curr_speed, player_state.sprint, key_pressed[SHIFT]);
 
     // Uvecavanje odgovarajucih koordinata u zavisnosti od dugmeta koje je pritisnuto
     if (key_pressed[W]) {

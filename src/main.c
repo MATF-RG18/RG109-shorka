@@ -6,6 +6,12 @@
 #include "player.h"
 #include "scene.h"
 
+ 
+int FULL_SCREEN = 0;
+int init_wheight = 800;
+float aspect = 16.0/9;
+ 
+
 // U SVE POMERAJE CE ICI dt, TJ RAZLIKA IZMEDJU DVA POZIVA TIMERA
 // ZBOG RAZLIKE U BRZINAMA RACUNARA
 int main(int argc, char **argv) {
@@ -28,10 +34,15 @@ int main(int argc, char **argv) {
     float light_ambient[] = {0.7f, 0.7f, 0.7f, 1};
     float light_specular[] = {0.7f, 0.7f, 0.7f, 1};
 
-    float material_diffuse[] = {0.5f, 0.4f,  0.4f, 1};
-    float material_ambient[] = {0.05f, 0, 0, 1};
-    float material_specular[] = {0.7f, 0.04f, 0.04f, 1};
-    float shininess = 0.078125f;
+    // float material_diffuse[] = {0.5f, 0.4f,  0.4f, 1};
+    // float material_ambient[] = {0.05f, 0, 0, 1};
+    // float material_specular[] = {0.7f, 0.04f, 0.04f, 1};
+    // float shininess = 0.078125f;
+
+    float material_ambient[]={ 0.19225f, 0.19225f, 0.19225f, 1.0f };
+    float material_diffuse[]={ 0.50754f, 0.50754f, 0.50754f, 1.0f};
+    float material_specular[] ={0.508273f, 0.508273f, 0.508273f, 1.0f };
+    float shininess = 51.2f;
 
     glLightfv(GL_LIGHT0, GL_POSITION, light_position);
     glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
@@ -153,6 +164,7 @@ void on_release(unsigned char key, int xx, int yy) {
 
 }
 
+// TODO bug sa sprintom
 void on_keyboard(unsigned char key, int xx, int yy) {
     switch (key) {
         case 27:
@@ -182,6 +194,11 @@ void on_keyboard(unsigned char key, int xx, int yy) {
             num_of_pressed_keys++;
             key_pressed[S] = 1;
 			break;
+        case 'C':
+        case 'c':
+            key_pressed[SHIFT] = 1;
+            player_state.sprint = 1;
+            break;
         // Oslobadjanje kursora; npr da bi moglo da se klikne nesto sto je van prozora igre
         case 'K':
         case 'k':
