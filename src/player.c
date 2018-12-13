@@ -70,7 +70,6 @@ void on_move(int value) {
     }
 }
 
-int i = 0;
 // Funkcija koja se poziva kao callback za skok
 void on_jump(int value) {
     if (value != JUMP_TIMER_ID)
