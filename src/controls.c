@@ -148,3 +148,11 @@ void on_release(unsigned char key, int xx, int yy) {
     }
 
 }
+
+extern void on_mouse_click(int button, int state, int x, int y) {
+    if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
+        // printf("Pucaj\n");
+        fire_bullet();
+    }
+
+}

@@ -10,6 +10,9 @@ typedef struct {
     float curr_speed;
     float step;
     float base_y;
+    // float lookat_x;
+    // float lookat_y;
+    // float lookat_z;
 } Player;
 
 typedef struct {
@@ -18,12 +21,31 @@ typedef struct {
     int sprint;
 } State;
 
+typedef struct {
+    float r;
+    float g;
+    float b;
+    float pos_x;
+    float pos_y;
+    float pos_z;
+    float lx;
+    float ly;
+    float lz;
+    float speed;
+    int fired;
+    int life;
+} Bullet;
+
 extern Player player;
 extern State player_state;
+extern Bullet bullet;
 
 extern void on_move(int value);
 extern void on_jump(int value);
 extern void position_player_view();
+
+extern void fire_bullet();
+extern void move_bullets();
 
 extern float speed;
 extern float speed1;
@@ -52,5 +74,6 @@ extern int num_of_pressed_keys;
  
 extern int pause_pressed;
 
+extern float bullet_speed;
 
 #endif

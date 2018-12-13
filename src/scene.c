@@ -9,6 +9,17 @@ Object objects_for_scene[OBJECT_NUM];
 void draw_scene() {
     glScalef(4, 4, 4);
     glPushMatrix();
+
+    float material_ambient[]={ 0.19225f, 0.19225f, 0.19225f, 1.0f };
+    float material_diffuse[]={ 0.50754f, 0.50754f, 0.50754f, 1.0f};
+    float material_specular[] ={0.508273f, 0.508273f, 0.508273f, 1.0f };
+    float shininess = 51.2f;
+
+    glMaterialfv(GL_FRONT, GL_AMBIENT, material_ambient);
+    glMaterialfv(GL_FRONT, GL_DIFFUSE, material_diffuse);
+    glMaterialfv(GL_FRONT, GL_SPECULAR, material_specular);
+    glMaterialf(GL_FRONT, GL_SHININESS, shininess);
+
     glTranslatef(20.0f, 0.0f, 0.0f);
     // Zid ispred igraca
     glPushMatrix();
@@ -62,4 +73,28 @@ void draw_scene() {
     glScalef(5.0f, 5.0f, 5.0f);
 
     glutSolidCube(1);
+}
+
+void draw_bullets() {
+    if (bullet.fired) {
+        glPushMatrix();
+
+        glTranslatef(bullet.pos_x, bullet.pos_y, bullet.pos_z);
+
+        // glColor3f(bullet.r, bullet.g, bullet.b);
+    //	0.24725	0.1995	0.0745	0.75164	0.60648	0.22648	0.628281	0.555802	0.366065	0.4
+        float material_ambient[] = {0.24725, 0.1995, 0.0745};
+        float material_diffuse[] = {0.75164, 0.60648, 0.22648};
+        float material_specular[] = {0.628281, 0.555802, 0.366065};
+        float shininess = 0.4;
+
+        glMaterialfv(GL_FRONT, GL_AMBIENT, material_ambient);
+        glMaterialfv(GL_FRONT, GL_DIFFUSE, material_diffuse);
+        glMaterialfv(GL_FRONT, GL_SPECULAR, material_specular);
+        glMaterialf(GL_FRONT, GL_SHININESS, shininess);
+
+        glutSolidSphere(.2f, 20, 10);
+
+        glPopMatrix();
+    }
 }

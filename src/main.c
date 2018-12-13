@@ -34,32 +34,18 @@ int main(int argc, char **argv) {
     float light_ambient[] = {0.7f, 0.7f, 0.7f, 1};
     float light_specular[] = {0.7f, 0.7f, 0.7f, 1};
 
-    // float material_diffuse[] = {0.5f, 0.4f,  0.4f, 1};
-    // float material_ambient[] = {0.05f, 0, 0, 1};
-    // float material_specular[] = {0.7f, 0.04f, 0.04f, 1};
-    // float shininess = 0.078125f;
-
-    float material_ambient[]={ 0.19225f, 0.19225f, 0.19225f, 1.0f };
-    float material_diffuse[]={ 0.50754f, 0.50754f, 0.50754f, 1.0f};
-    float material_specular[] ={0.508273f, 0.508273f, 0.508273f, 1.0f };
-    float shininess = 51.2f;
-
     glLightfv(GL_LIGHT0, GL_POSITION, light_position);
     glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
     glLightfv(GL_LIGHT0, GL_SPECULAR, light_specular);
     glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
 
-    glMaterialfv(GL_FRONT, GL_AMBIENT, material_ambient);
-    glMaterialfv(GL_FRONT, GL_DIFFUSE, material_diffuse);
-    glMaterialfv(GL_FRONT, GL_SPECULAR, material_specular);
-    glMaterialf(GL_FRONT, GL_SHININESS, shininess);
-        
     // Registrovanje callback funkcija
     glutDisplayFunc(on_display_func);
     glutReshapeFunc(on_reshape);
     glutKeyboardFunc(on_keyboard);
     glutPassiveMotionFunc(on_mouse_look);
     glutMotionFunc(on_mouse_look);
+    glutMouseFunc(on_mouse_click);
     glutKeyboardUpFunc(on_release);
     glutSetKeyRepeat(GLUT_KEY_REPEAT_OFF);
     main_timer_active = 1;
@@ -79,8 +65,9 @@ void main_timer_func() {
         player_state.walking = 1;
     }
 
+    // Gravity
     if (player.pos_y > player.base_y && !player_state.jumping) {
-        printf("decreasing height pos_y=%lf\n", player.pos_y);
+        // printf("decreasing height pos_y=%lf\n", player.pos_y);
         player.pos_y -= height_decrease;
         glutPostRedisplay();
     }
@@ -89,6 +76,8 @@ void main_timer_func() {
         glutTimerFunc(TIMER_INTERVAL, main_timer_func, MAIN_TIMER_ID);
         main_timer_active = 1;
     }
+
+    move_bullets();
 
     glutPostRedisplay();
 }
@@ -141,6 +130,8 @@ void on_display_func(void) {
 
     // Objekti za debug kretanja
     draw_scene();
+
+    draw_bullets();
     
 	glutSwapBuffers();
 }

@@ -4,6 +4,7 @@
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include "player.h"
 
 typedef struct {
     float pos_x;
@@ -13,4 +14,6 @@ typedef struct {
 
 extern void draw_scene(void);
 extern void draw_object(void);
+extern void draw_bullets(void);
+
 #endif
