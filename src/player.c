@@ -1,5 +1,4 @@
 #include "player.h"
-// #include "main.h"
 
 Player player = {
     .pos_x = 0.0f,
@@ -37,7 +36,7 @@ int num_of_pressed_keys = 0;
 int pause_pressed = 0;
 
 float speed = 0.1f;
-float speed1 = 0.05f;
+float speed1 = 0.07f;
 
 
 float lookat_x, lookat_y, lookat_z;
@@ -77,14 +76,14 @@ void on_jump(int value) {
     
     if (player.pos_y < jump_max && player_state.jumping) {
         player.pos_y += height_increase;
-        printf("Increasing height pos_y=%lf\n", player.pos_y);
+        // printf("Increasing height pos_y=%lf\n", player.pos_y);
     }
 
     if ((player.pos_y <= jump_max + 0.1 || 
         player.pos_y >= jump_max - 0.1 || 
         player.pos_y == jump_max) && player.pos_y >= player.base_y + 2.0f) {
         player_state.jumping = 0;
-        printf("Inverting jumping=%d\n", player_state.jumping);
+        // printf("Inverting jumping=%d\n", player_state.jumping);
     }
 
     if (player_state.jumping) {
