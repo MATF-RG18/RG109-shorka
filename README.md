@@ -2,12 +2,11 @@
 First person igra. "Deathmatch" sa botovima kojima je cilj da eksplodiraju u blizini igraca.
 
 ## Kontrole:
-
-* `W` - pravo
-* `S` - nazad
-* `A` - levo
-* `D` - desno
-* `space` - skok
-
-* `strafe` odnosno dijagonalno kretanje, kombinacije gornjih.
-* *miš* - kretanje kamere
+| Kontrola | Opis|
+| :-------------: | :-------------: |
+| `W` | pravo |
+| `A` | levo |
+| `S` | nazad |
+| `D` | desno |
+| `space` | skok |
+| `mis` | kretanje kamere |
