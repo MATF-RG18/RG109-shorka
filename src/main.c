@@ -124,7 +124,8 @@ void main_timer_func() {
         player_state.walking = 1;
     }
 
-    if (player.pos_y > 2 + player.base_y && !player_state.jumping) {
+    if (player.pos_y > player.base_y && !player_state.jumping) {
+        printf("decreasing height pos_y=%lf\n", player.pos_y);
         player.pos_y -= height_decrease;
         glutPostRedisplay();
     }
@@ -213,8 +214,8 @@ void on_keyboard(unsigned char key, int xx, int yy) {
             break;  
         // Skok; registruje se tajmer za animaciju skakanja
         case 32:
-            // Ako player nije na podu ne moze opet da skoci; <=2.0f zbog greske u racunu, srediti ovo
-            if (player.pos_y <= 2.0f && !player_state.jumping) {
+            // Ako player nije na podu ne moze opet da skoci; <=3.0f zbog greske u racunu, srediti ovo
+            if (player.pos_y <= player.base_y && !player_state.jumping) {
                 player_state.jumping = 1;
                 glutTimerFunc(TIMER_INTERVAL, on_jump, JUMP_TIMER_ID);
             }

@@ -3,11 +3,11 @@
 
 Player player = {
     .pos_x = 0.0f,
-    .pos_y = 4.0f,
+    .pos_y = 3.0f,
     .pos_z = 0.0f,
     .curr_speed = 0,
-    .step = 0.05f,
-    .base_y = 0
+    .step = 0.07f,
+    .base_y = 3.0f
 };
 
 // dodaj sprint, duck
@@ -26,7 +26,7 @@ int MAX_ELEVATION_VAL = 100;
  
 int main_timer_active = 0;
  
-double jump_max = 4.00000;
+double jump_max = 6.00000;
 double height_increase =  0.2;
 double height_decrease = 0.1;
 
@@ -48,17 +48,10 @@ void on_move(int value) {
         return;
 
     player_state.walking = 0;
-    // player_state.sprint = key_pressed[SHIFT] == 1 ? 1 : 0;
 
     // Biram brzinu kretanja u zavisnosti od toga da li je kretanje samo pravo ili strafe
     player.curr_speed = num_of_pressed_keys == 2 ? speed1 : speed;
 
-    // Po potrebi uvecavam brzinu ako je player u stanju sprint
-    // player.curr_speed = key_pressed[SHIFT] ? player.curr_speed * 2.5 : player.curr_speed;
-
-    // printf("----speed=%lf sprint=%d shift=%d\n", player.curr_speed, player_state.sprint, key_pressed[SHIFT]);
-
-    // Uvecavanje odgovarajucih koordinata u zavisnosti od dugmeta koje je pritisnuto
     if (key_pressed[W]) {
         player.pos_x += lookat_x * player.curr_speed;
         player.pos_z += lookat_z * player.curr_speed; 
@@ -85,12 +78,14 @@ void on_jump(int value) {
     
     if (player.pos_y < jump_max && player_state.jumping) {
         player.pos_y += height_increase;
+        printf("Increasing height pos_y=%lf\n", player.pos_y);
     }
 
-    if ((player.pos_y + 0.1 >= jump_max || 
-        player.pos_y - 0.1 >= jump_max || 
-        player.pos_y == jump_max) && player.pos_y >= player.base_y + 2) {
+    if ((player.pos_y <= jump_max + 0.1 || 
+        player.pos_y >= jump_max - 0.1 || 
+        player.pos_y == jump_max) && player.pos_y >= player.base_y + 2.0f) {
         player_state.jumping = 0;
+        printf("Inverting jumping=%d\n", player_state.jumping);
     }
 
     if (player_state.jumping) {
