@@ -10,9 +10,6 @@ typedef struct {
     float curr_speed;
     float step;
     float base_y;
-    // float lookat_x;
-    // float lookat_y;
-    // float lookat_z;
 } Player;
 
 typedef struct {

@@ -135,7 +135,7 @@ void position_player_view() {
 
 void fire_bullet() {
     bullet.pos_x = player.pos_x;
-    bullet.pos_y = player.pos_y - 2.0f; // da ne puca bas iz glave
+    bullet.pos_y = player.pos_y; // da ne puca bas iz glave
     bullet.pos_z = player.pos_z;
     printf("----------------------------------------------------\n");
     printf("Metak pozicije u trenutku fire: %lf %lf %lf\n", bullet.pos_x, bullet.pos_y, bullet.pos_z);
