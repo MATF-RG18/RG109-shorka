@@ -17,19 +17,20 @@ State player_state = {
 };
 
 Bullet bullet = {
-    .r = 1.0f,
-    .g = 0.5f,
-    .b = 0.0f,
     .pos_x = .0f,
     .pos_y = 3.0f,
     .pos_z = .0f,
     .lx = .0f,
     .ly = .0f,
     .lz = .0f,
-    .speed = .2f,
+    .speed = .4f,
     .fired = 0,
     .life = 0
 };
+
+// Bullet bullets[MAX_BULLET_NUM] = {
+//     bullet, bullet, bullet, bullet, bullet, bullet
+// };
 
 const float view_azdt = 5, view_elevdt = 3;
 float view_azymuth = 0, view_elevetion = 0;
@@ -50,8 +51,8 @@ int num_of_pressed_keys = 0;
  
 int pause_pressed = 0;
 
-float speed = 0.1f;
-float speed1 = 0.07f;
+float speed = 0.2f;
+float speed1 = 0.1f;
 
 float bullet_speed = 0.5f;
 
@@ -83,10 +84,6 @@ void on_move(int value) {
         player.pos_x -= lookat_z * player.curr_speed;
         player.pos_z += lookat_x * player.curr_speed;
     }
-
-    // bullet.pos_x = player.pos_x;
-    // bullet.pos_y = player.pos_y - 0.8f; // da ne puca bas iz glave
-    // bullet.pos_z = player.pos_z;
 }
 
 // Funkcija koja se poziva kao callback za skok
@@ -96,14 +93,12 @@ void on_jump(int value) {
     
     if (player.pos_y < jump_max && player_state.jumping) {
         player.pos_y += height_increase;
-        // printf("Increasing height pos_y=%lf\n", player.pos_y);
     }
 
     if ((player.pos_y <= jump_max + 0.1 || 
         player.pos_y >= jump_max - 0.1 || 
         player.pos_y == jump_max) && player.pos_y >= player.base_y + 2.0f) {
         player_state.jumping = 0;
-        // printf("Inverting jumping=%d\n", player_state.jumping);
     }
 
     if (player_state.jumping) {
@@ -135,25 +130,22 @@ void position_player_view() {
 
 void fire_bullet() {
     bullet.pos_x = player.pos_x;
-    bullet.pos_y = player.pos_y; // da ne puca bas iz glave
+    bullet.pos_y = player.pos_y - .3f; // da ne puca bas iz glave
     bullet.pos_z = player.pos_z;
-    printf("----------------------------------------------------\n");
-    printf("Metak pozicije u trenutku fire: %lf %lf %lf\n", bullet.pos_x, bullet.pos_y, bullet.pos_z);
 
     bullet.lx = lookat_x; //+ eye_x;
     bullet.ly = lookat_y; //+ eye_y;
     bullet.lz = lookat_z; //+ eye_z;
 
-    printf("Vektor pravca metka %lf %lf %lf\n", bullet.lx, bullet.ly, bullet.lz);
-    printf("Vektor pogleda za glulookat %lf %lf %lf\n", lookat_x + eye_x, lookat_y + eye_y, lookat_z + eye_z);
-
     bullet.fired = 1;
     bullet.life = 0;
-
-    printf("Ispaljujem sa pozicije %lf %lf %lf\n", player.pos_x, player.pos_y, player.pos_z);
-    printf("----------------------------------------------------\n");
-    // glColor3f(bullet.r, bullet.g, bullet.b);
 }
+
+// void init_bullets() {
+//     for (int i = 0; i < MAX_BULLET_NUM; i++) {
+//         bullets[i] = bullet;
+//     }
+// }
 
 void move_bullets() {
     if (bullet.fired) {
@@ -163,7 +155,5 @@ void move_bullets() {
 
         bullet.life++;
         bullet.fired = bullet.life <= 100 ? 1 : 0;
-
-        // printf("[move_bullets] %lf %lf %lf\n", bullet.pos_x, bullet.pos_y, bullet.pos_z);
     }
 }

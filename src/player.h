@@ -1,5 +1,7 @@
 #ifndef PLAYER_H
 #define PLAYER_H
+
+#define MAX_BULLET_NUM 6
 #include <stdio.h>
 #include <math.h>
 #include "main.h"
@@ -43,6 +45,8 @@ extern void position_player_view();
 
 extern void fire_bullet();
 extern void move_bullets();
+
+extern void init_bullets();
 
 extern float speed;
 extern float speed1;

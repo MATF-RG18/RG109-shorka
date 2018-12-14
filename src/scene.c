@@ -8,7 +8,7 @@ Object objects_for_scene[OBJECT_NUM];
 
 void draw_scene() {
     glPushMatrix();
-    glScalef(4, 4, 4);
+    glScalef(3, 3, 4);
     glPushMatrix();
 
     float material_ambient[]={ 0.19225f, 0.19225f, 0.19225f, 1.0f };
