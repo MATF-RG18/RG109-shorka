@@ -70,10 +70,10 @@ void draw_scene() {
     glPopMatrix();
 
     // Debug kocka
-    glTranslatef(5.0f, .0f, .0f);
-    glScalef(5.0f, 5.0f, 5.0f);
+    // glTranslatef(5.0f, .0f, .0f);
+    // glScalef(5.0f, 5.0f, 5.0f);
 
-    glutSolidCube(1);
+    // glutSolidCube(1);
 
     glPopMatrix();
     glPopMatrix();

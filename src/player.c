@@ -45,8 +45,8 @@ double jump_max = 6.00000;
 double height_increase =  0.2;
 double height_decrease = 0.1;
 
-char moving_keys[] = {FORWARD, LEFT, BACK, RIGHT, SHIFT};
-int key_pressed[] = {0, 0, 0, 0}; 
+char moving_keys[] = {FORWARD, LEFT, BACK, RIGHT, SHIFT, SPAWN_BOT};
+int key_pressed[] = {0, 0, 0, 0, 0}; 
 int num_of_pressed_keys = 0;
  
 int pause_pressed = 0;

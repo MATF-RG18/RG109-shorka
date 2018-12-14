@@ -1,4 +1,5 @@
 #include "controls.h"
+#include "bots.h"
 
 int mouse_fixed = 1;
 // Callback funkcija koja se poziva za "gledanje okolo", odnosno kao callback mouse motion
@@ -119,6 +120,11 @@ void on_keyboard(unsigned char key, int xx, int yy) {
                 main_timer_active = 1;
             }
             break;
+        // Spawn bot
+        case 'b':
+        case 'B':
+            key_pressed[B] = 1;
+            break;
     }
 }
 
@@ -144,6 +150,10 @@ void on_release(unsigned char key, int xx, int yy) {
         case 'd':
             num_of_pressed_keys--;
             key_pressed[D] = 0;
+            break;
+        case 'b':
+        case 'B':
+            key_pressed[B] = 0;
             break;
     }
 

@@ -6,6 +6,8 @@
 #include "player.h"
 #include "scene.h"
 #include "controls.h"
+#include "bots.h"
+#include "collision.h"
  
 int FULL_SCREEN = 0;
 int init_wheight = 800;
@@ -79,6 +81,10 @@ void main_timer_func() {
 
     move_bullets();
 
+    move_bot();
+
+    check_collision();    
+
     glutPostRedisplay();
 }
 
@@ -130,6 +136,9 @@ void on_display_func(void) {
 
     // Objekti za debug kretanja
     draw_scene();
+
+    if (bot.alive)
+        draw_bot();
 
     draw_bullets();
     

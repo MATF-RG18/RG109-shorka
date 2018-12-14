@@ -7,12 +7,14 @@
 #define LEFT 'a'
 #define BACK 's'
 #define RIGHT 'd'
+#define SPAWN_BOT 'b'
 
 #define W 0
 #define A 1
 #define S 2
 #define D 3
 #define SHIFT 4
+#define B 5
 
 #define M_PI acos(-1.0)
 #define TIMER_INTERVAL (20)
