@@ -10,3 +10,4 @@ First person igra. "Deathmatch" sa botovima kojima je cilj da eksplodiraju u bli
 | `D` | desno |
 | `space` | skok |
 | `mis` | kretanje kamere |
+| `levi klik` | ispaljivanje metka |
