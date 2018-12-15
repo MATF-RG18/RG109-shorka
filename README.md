@@ -1,5 +1,5 @@
 ### RG109-shorka
-First person igra. "Deathmatch" sa botovima kojima je cilj da eksplodiraju u blizini igraca.
+FPS sa botovima.
 
 ## Kontrole:
 | Kontrola | Opis|
