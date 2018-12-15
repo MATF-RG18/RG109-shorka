@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <GL/glut.h>
 #include <math.h>
+#include "player.h"
 
 typedef struct {
     float pos_x;
@@ -17,8 +18,10 @@ typedef struct {
 } Bot;
 
 extern Bot bot;
+extern Bullet bbullet;
 
 extern void draw_bot();
 extern void move_bot();
+extern void shoot();
 
 #endif

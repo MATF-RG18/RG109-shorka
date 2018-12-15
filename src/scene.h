@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "player.h"
+#include "bots.h"
 
 typedef struct {
     float pos_x;

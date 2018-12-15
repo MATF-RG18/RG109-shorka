@@ -44,9 +44,6 @@ extern void on_jump(int value);
 extern void position_player_view();
 
 extern void fire_bullet();
-extern void move_bullets();
-
-extern void init_bullets();
 
 extern float speed;
 extern float speed1;

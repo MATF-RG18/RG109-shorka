@@ -28,10 +28,6 @@ Bullet bullet = {
     .life = 0
 };
 
-// Bullet bullets[MAX_BULLET_NUM] = {
-//     bullet, bullet, bullet, bullet, bullet, bullet
-// };
-
 const float view_azdt = 5, view_elevdt = 3;
 float view_azymuth = 0, view_elevetion = 0;
 float mouse_sens = 0.01f;
@@ -139,21 +135,4 @@ void fire_bullet() {
 
     bullet.fired = 1;
     bullet.life = 0;
-}
-
-// void init_bullets() {
-//     for (int i = 0; i < MAX_BULLET_NUM; i++) {
-//         bullets[i] = bullet;
-//     }
-// }
-
-void move_bullets() {
-    if (bullet.fired) {
-        bullet.pos_x += bullet.speed * bullet.lx;
-        bullet.pos_y += bullet.speed * bullet.ly;
-        bullet.pos_z += bullet.speed * bullet.lz;
-
-        bullet.life++;
-        bullet.fired = bullet.life <= 100 ? 1 : 0;
-    }
 }

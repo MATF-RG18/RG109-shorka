@@ -8,7 +8,7 @@
 extern void check_collision();
 
 extern void bot_bullet();
-
+extern void intersect();
 
 
 #endif

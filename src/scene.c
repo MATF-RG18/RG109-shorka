@@ -95,7 +95,27 @@ void draw_bullets() {
         glMaterialfv(GL_FRONT, GL_SPECULAR, material_specular);
         glMaterialf(GL_FRONT, GL_SHININESS, shininess);
 
-        glutSolidSphere(.1f, 20, 10);
+        glutSolidSphere(.4f, 20, 10);
+
+        glPopMatrix();
+    }
+
+    if (bbullet.fired) {
+        glPushMatrix();
+
+        glTranslatef(bbullet.pos_x, bbullet.pos_y, bbullet.pos_z);
+        
+        float material_ambient[] = {.0f, .0f, .0f, .0f};
+        float material_diffuse[] = {.5f, .0f, .0f};
+        float material_specular[] = {.4f, .6f, .6f};
+        float shininess = .25f;
+
+        glMaterialfv(GL_FRONT, GL_AMBIENT, material_ambient);
+        glMaterialfv(GL_FRONT, GL_DIFFUSE, material_diffuse);
+        glMaterialfv(GL_FRONT, GL_SPECULAR, material_specular);
+        glMaterialf(GL_FRONT, GL_SHININESS, shininess);
+
+        glutSolidSphere(1.0f, 20, 10);
 
         glPopMatrix();
     }

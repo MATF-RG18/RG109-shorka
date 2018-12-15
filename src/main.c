@@ -8,6 +8,7 @@
 #include "controls.h"
 #include "bots.h"
 #include "collision.h"
+#include "bullets.h"
  
 int FULL_SCREEN = 0;
 int init_wheight = 800;
@@ -83,7 +84,7 @@ void main_timer_func() {
 
     move_bot();
 
-    check_collision();    
+    check_collision();          
 
     glutPostRedisplay();
 }

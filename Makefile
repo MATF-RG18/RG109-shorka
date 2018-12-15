@@ -4,8 +4,11 @@ CFLAGS  = -g -std=c99 -Wall -I/usr/X11R6/include -I/usr/pkg/include
 LDFLAGS = -L/usr/X11R6/lib -L/usr/pkg/lib
 LDLIBS  = -lglut -lGLU -lGL -lm
 
-$(PROGRAM): scene.o main.o player.o controls.o bots.o collision.o
-	$(CC) scene.o main.o player.o controls.o bots.o collision.o -o $(PROGRAM) $(LDLIBS) $(LDFLAGS)
+$(PROGRAM): scene.o main.o player.o controls.o bots.o collision.o bullets.o
+	$(CC) scene.o main.o player.o controls.o bots.o collision.o bullets.o -o $(PROGRAM) $(LDLIBS) $(LDFLAGS)
+
+bullets.o: src/bullets.c src/bullets.h
+	$(CC) -c $(LDFLAGS) $(CFLAGS) src/bullets.c -o bullets.o $(LDLIBS) $(LDFLAGS)
 
 collision.o: src/collision.c src/collision.h
 	$(CC) -c $(LDFLAGS) $(CFLAGS) src/collision.c -o collision.o $(LDLIBS) $(LDFLAGS)
