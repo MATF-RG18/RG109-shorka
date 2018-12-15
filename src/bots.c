@@ -10,8 +10,8 @@ Bot bot = {
     .lx = 0,
     .ly = 0,
     .lz = 0,
-    .alive = 1,
-    .speed = 0.04f
+    .speed = 0.04f,
+    .health = 100
 };
 
 Bullet bbullet = {
@@ -29,40 +29,72 @@ Bullet bbullet = {
 
 int i = 0;
 void draw_bot() {
-    srand((unsigned int)time(NULL));
-    // Da bot ne prelazi po x-u blize od 20 :)
-    float h = fabsf(bot.pos_z - player.pos_z);
-    float rand_x = (float)rand()/(float)(RAND_MAX/10.0) + 20;
-    float rand_y = (float)rand()/(float)(RAND_MAX/jump_max) + 2;
-    float rand_z = (float)rand()/(float)(RAND_MAX/h) - h/2;
+    if (bot.health > 0) {
+        srand((unsigned int)time(NULL));
+        // Da bot ne prelazi po x-u blize od 20 :)
+        float h = fabsf(bot.pos_z - player.pos_z);
+        float rand_x = (float)rand()/(float)(RAND_MAX/10.0) + 20;
+        float rand_y = (float)rand()/(float)(RAND_MAX/jump_max) + 2;
+        float rand_z = (float)rand()/(float)(RAND_MAX/h) - h/2;
 
-    bot.ly = rand_y - bot.pos_y;
-    bot.lx = rand_x - bot.pos_x;
-    bot.lz = rand_z - bot.pos_z;
+        bot.ly = rand_y - bot.pos_y;
+        bot.lx = rand_x - bot.pos_x;
+        bot.lz = rand_z - bot.pos_z;
 
-    glPushMatrix();
+        glPushMatrix();
 
-    glTranslatef(bot.pos_x, bot.pos_y, bot.pos_z);
+        glTranslatef(bot.pos_x, bot.pos_y, bot.pos_z);
 
-    glPushMatrix();
-    glScalef(1, 2, 1);
+        glPushMatrix();
+        glScalef(1, 2, 1);
 
-    glutSolidCube(2);
+        set_bot_material();
 
-    glPopMatrix();
-    glPopMatrix();
+        glutSolidCube(2);
+
+        glPopMatrix();
+        glPopMatrix();
+    }
+}
+
+void set_bot_material() {
+    if (bot.health <= 30) {
+        float material_ambient[] = {.1745f,0.01175f, 0.01175f};
+        float material_diffuse[] = {0.61424f, 0.04136f,	0.04136f};
+        float material_specular[] = {0.727811f, 0.626959f, 0.626959f};
+        float shininess = .6f;
+
+        glMaterialfv(GL_FRONT, GL_AMBIENT, material_ambient);
+        glMaterialfv(GL_FRONT, GL_DIFFUSE, material_diffuse);
+        glMaterialfv(GL_FRONT, GL_SPECULAR, material_specular);
+        glMaterialf(GL_FRONT, GL_SHININESS, shininess);
+        return;
+        // 0.05	0.0	0.0	0.5	0.4	0.4	0.7	0.04	0.04	.078125
+        
+    }
+    if (bot.health <= 75) {
+        float material_ambient[] = {.0f, .0f, .0f, .0f};
+        float material_diffuse[] = {.5f, .0f, .0f};
+        float material_specular[] = {.4f, .6f, .6f};
+        float shininess = .25f;
+
+        glMaterialfv(GL_FRONT, GL_AMBIENT, material_ambient);
+        glMaterialfv(GL_FRONT, GL_DIFFUSE, material_diffuse);
+        glMaterialfv(GL_FRONT, GL_SPECULAR, material_specular);
+        glMaterialf(GL_FRONT, GL_SHININESS, shininess);
+        return;
+    }
 }
 
 void move_bot() {
-    // printf("moving bot\n");
-    // printf("x=%lf y=%lf z=%lf\n", bot.pos_x, bot.pos_y, bot.pos_z);
-    if (!bbullet.fired) {
-        // printf("Bot sould shoot!\n");
-        shoot();
-    }   
-    bot.pos_x += bot.lx * bot.speed;
-    bot.pos_y += bot.ly * bot.speed;
-    bot.pos_z += bot.lz * bot.speed;
+    if (bot.health > 0) {
+        if (!bbullet.fired) {
+            shoot();
+        }   
+        bot.pos_x += bot.lx * bot.speed;
+        bot.pos_y += bot.ly * bot.speed;
+        bot.pos_z += bot.lz * bot.speed;
+    }
 }
 
 extern void shoot() {
@@ -80,8 +112,6 @@ extern void shoot() {
     bbullet.lx = vx / norm; 
     bbullet.ly = vy / norm; 
     bbullet.lz = vz / norm; 
-
-    // printf("bot puca sa %lf %lf %lf\n", bbullet.pos_x, bbullet.pos_y, bbullet.pos_z);
 
     bbullet.fired = 1;
     bbullet.life = 0;

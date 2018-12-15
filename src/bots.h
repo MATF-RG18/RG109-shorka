@@ -13,8 +13,8 @@ typedef struct {
     float lx;
     float ly;
     float lz;
-    int alive;
     float speed;
+    int health;
 } Bot;
 
 extern Bot bot;
@@ -23,5 +23,6 @@ extern Bullet bbullet;
 extern void draw_bot();
 extern void move_bot();
 extern void shoot();
+extern void set_bot_material();
 
 #endif
