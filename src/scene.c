@@ -80,24 +80,27 @@ void draw_scene() {
 }
 
 void draw_bullets() {
-    if (bullet.fired) {
-        glPushMatrix();
+    for (int i = 0; i < MAX_BULLET_NUM; i++) {
+        if (bullets[i].fired) {
+            glPushMatrix();
 
-        glTranslatef(bullet.pos_x, bullet.pos_y, bullet.pos_z);
-        
-        float material_ambient[] = {0.24725, 0.1995, 0.0745};
-        float material_diffuse[] = {0.75164, 0.60648, 0.22648};
-        float material_specular[] = {0.628281, 0.555802, 0.366065};
-        float shininess = 0.4;
+            glTranslatef(bullets[i].pos_x, bullets[i].pos_y, bullets[i].pos_z);
+            // printf("Iscrtavam metak na %d-ti %lf %lf %lf\n", i, bullets[i].pos_x, bullets[i].pos_y, bullets[i].pos_z);
+            
+            float material_ambient[] = {0.24725, 0.1995, 0.0745};
+            float material_diffuse[] = {0.75164, 0.60648, 0.22648};
+            float material_specular[] = {0.628281, 0.555802, 0.366065};
+            float shininess = 0.4;
 
-        glMaterialfv(GL_FRONT, GL_AMBIENT, material_ambient);
-        glMaterialfv(GL_FRONT, GL_DIFFUSE, material_diffuse);
-        glMaterialfv(GL_FRONT, GL_SPECULAR, material_specular);
-        glMaterialf(GL_FRONT, GL_SHININESS, shininess);
+            glMaterialfv(GL_FRONT, GL_AMBIENT, material_ambient);
+            glMaterialfv(GL_FRONT, GL_DIFFUSE, material_diffuse);
+            glMaterialfv(GL_FRONT, GL_SPECULAR, material_specular);
+            glMaterialf(GL_FRONT, GL_SHININESS, shininess);
 
-        glutSolidSphere(.4f, 20, 10);
+            glutSolidSphere(.4f, 20, 10);
 
-        glPopMatrix();
+            glPopMatrix();
+        }
     }
 
     if (bbullet.fired) {

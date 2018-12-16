@@ -38,6 +38,7 @@ typedef struct {
 extern Player player;
 extern State player_state;
 extern Bullet bullet;
+extern Bullet bullets[MAX_BULLET_NUM];
 
 extern void on_move(int value);
 extern void on_jump(int value);

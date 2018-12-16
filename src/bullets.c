@@ -1,16 +1,22 @@
 #include "bullets.h"
 
 void move_bullets() {
-    if (bullet.fired) {
-        bullet.pos_x += bullet.speed * bullet.lx;
-        bullet.pos_y += bullet.speed * bullet.ly;
-        bullet.pos_z += bullet.speed * bullet.lz;
+    // Pomeram metkove koje je ispalio igrac
+    for (int i = 0; i < MAX_BULLET_NUM; i++) {
+        if (bullets[i].fired) {
+            bullets[i].pos_x += bullets[i].speed * bullets[i].lx;
+            bullets[i].pos_y += bullets[i].speed * bullets[i].ly;
+            bullets[i].pos_z += bullets[i].speed * bullets[i].lz;
 
-        printf("%lf %lf %lf \n", bullet.pos_x, bullet.pos_y, bullet.pos_z);
+            // printf("[%d] %lf %lf %lf \n",i,  bullets[i].pos_x, bullets[i].pos_y, bullets[i].pos_z);
 
-        bullet.life++;
-        bullet.fired = bullet.life <= 200 ? 1 : 0;
+            bullets[i].life++;
+            bullets[i].fired = bullets[i].life <= 200 ? 1 : 0;
+        }
     }
+
+
+    
 
     if (bbullet.fired) {
         bbullet.pos_x += bbullet.speed * bbullet.lx;

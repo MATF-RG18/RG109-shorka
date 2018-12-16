@@ -138,7 +138,7 @@ void on_display_func(void) {
     // Objekti za debug kretanja
     draw_scene();
 
-    if (bot.alive)
+    if (bot.health)
         draw_bot();
 
     draw_bullets();

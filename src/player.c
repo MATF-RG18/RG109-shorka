@@ -28,6 +28,20 @@ Bullet bullet = {
     .life = 0
 };
 
+Bullet init_bullet = {
+    .pos_x = .0f,
+    .pos_y = 3.0f,
+    .pos_z = .0f,
+    .lx = .0f,
+    .ly = .0f,
+    .lz = .0f,
+    .speed = .6f,
+    .fired = 0,
+    .life = 0
+};
+
+Bullet bullets[MAX_BULLET_NUM];
+
 const float view_azdt = 5, view_elevdt = 3;
 float view_azymuth = 0, view_elevetion = 0;
 float mouse_sens = 0.01f;
@@ -124,15 +138,30 @@ void position_player_view() {
             0, 1, 0);
 }
 
+
+
 void fire_bullet() {
-    bullet.pos_x = player.pos_x;
-    bullet.pos_y = player.pos_y - .3f; // da ne puca bas iz glave
-    bullet.pos_z = player.pos_z;
+    for (int i = 0; i < MAX_BULLET_NUM; i++) {
+        // Trazim prvi metak koji moze da se ispali;
+        // Ako nema, cekaj da neki "umre" pa ga opali
+        if (!bullets[i].fired) {
+            bullets[i].speed = .6f;
+            // printf("Ispaljujem metak %d \n", i);
+            bullets[i].pos_x = player.pos_x;
+            bullets[i].pos_y = player.pos_y - .3f; // da ne puca bas iz glave
+            bullets[i].pos_z = player.pos_z;
 
-    bullet.lx = lookat_x; //+ eye_x;
-    bullet.ly = lookat_y; //+ eye_y;
-    bullet.lz = lookat_z; //+ eye_z;
+            bullets[i].lx = lookat_x; 
+            bullets[i].ly = lookat_y; 
+            bullets[i].lz = lookat_z; 
 
-    bullet.fired = 1;
-    bullet.life = 0;
+            printf("%lf %lf %lf\n", bullets[i].lx, bullets[i].ly, bullets[i].lz);
+
+            bullets[i].fired = 1;
+            bullets[i].life = 0;
+            return;
+        }
+    }
+
+    
 }

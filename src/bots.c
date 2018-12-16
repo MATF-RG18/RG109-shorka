@@ -94,7 +94,7 @@ void move_bot() {
         bot.pos_y += bot.ly * bot.speed;
         bot.pos_z += bot.lz * bot.speed;
 
-        printf("--- %lf %lf %lf\n", bot.pos_x, bot.pos_y, bot.pos_z);
+        // printf("--- %lf %lf %lf\n", bot.pos_x, bot.pos_y, bot.pos_z);
     }
 }
 
