@@ -2,6 +2,7 @@
 #include <math.h>
 #include <GL/glut.h>
 #include <stdio.h>
+#include <time.h>
 
 #include "player.h"
 #include "scene.h"
@@ -54,6 +55,10 @@ int main(int argc, char **argv) {
     main_timer_active = 1;
     glutTimerFunc(TIMER_INTERVAL, main_timer_func, MAIN_TIMER_ID);
     
+    srand((unsigned int)time(NULL));
+
+    init_bots();
+
     glutMainLoop();
 
     return 0;
@@ -82,7 +87,7 @@ void main_timer_func() {
 
     move_bullets();
 
-    move_bot();
+    move_bots();
 
     check_collision();          
 
@@ -138,8 +143,7 @@ void on_display_func(void) {
     // Objekti za debug kretanja
     draw_scene();
 
-    if (bot.health)
-        draw_bot();
+    draw_bots();
 
     draw_bullets();
     

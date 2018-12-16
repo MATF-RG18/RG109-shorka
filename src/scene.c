@@ -103,23 +103,43 @@ void draw_bullets() {
         }
     }
 
-    if (bbullet.fired) {
-        glPushMatrix();
+    for (int i = 0; i < BOT_NUM; i++) {
+        if (bots[i].bullet.fired) {
+            glPushMatrix();
 
-        glTranslatef(bbullet.pos_x, bbullet.pos_y, bbullet.pos_z);
-        
-        float material_ambient[] = {.0f, .0f, .0f, .0f};
-        float material_diffuse[] = {.5f, .0f, .0f};
-        float material_specular[] = {.4f, .6f, .6f};
-        float shininess = .25f;
+            glTranslatef(bots[i].bullet.pos_x, bots[i].bullet.pos_y, bots[i].bullet.pos_z);
 
-        glMaterialfv(GL_FRONT, GL_AMBIENT, material_ambient);
-        glMaterialfv(GL_FRONT, GL_DIFFUSE, material_diffuse);
-        glMaterialfv(GL_FRONT, GL_SPECULAR, material_specular);
-        glMaterialf(GL_FRONT, GL_SHININESS, shininess);
+            // printf("[draw_bullets] %lf %lf %lf\n", bots[i].bullet.pos_x, bots[i].bullet.pos_y, bots[i].bullet.pos_z);
+            
+            // SREDI OVO!!!
+            if (i % 2 == 0) {
+                float material_ambient[] = {.0f, .0f, .0f, .0f};
+                float material_diffuse[] = {.5f, .0f, .0f};
+                float material_specular[] = {.4f, .6f, .6f};
+                float shininess = .25f;
 
-        glutSolidSphere(1.0f, 20, 10);
+                glMaterialfv(GL_FRONT, GL_AMBIENT, material_ambient);
+                glMaterialfv(GL_FRONT, GL_DIFFUSE, material_diffuse);
+                glMaterialfv(GL_FRONT, GL_SPECULAR, material_specular);
+                glMaterialf(GL_FRONT, GL_SHININESS, shininess);
+            }
+            else {
+                float material_ambient[] = {.0f, .0f,.0f, .1f};
+                float material_diffuse[] = {.35f, .1f, .45f};
+                float material_specular[] = {.55f, .45f, .25f};
+                float shininess = .25f;
 
-        glPopMatrix();
+                glMaterialfv(GL_FRONT, GL_AMBIENT, material_ambient);
+                glMaterialfv(GL_FRONT, GL_DIFFUSE, material_diffuse);
+                glMaterialfv(GL_FRONT, GL_SPECULAR, material_specular);
+                glMaterialf(GL_FRONT, GL_SHININESS, shininess);
+            }
+
+            
+
+            glutSolidSphere(1.0f, 20, 10);
+
+            glPopMatrix();
+        }
     }
 }

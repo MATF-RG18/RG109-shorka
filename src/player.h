@@ -1,7 +1,7 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
-#define MAX_BULLET_NUM 6
+#define MAX_BULLET_NUM 8
 #include <stdio.h>
 #include <math.h>
 #include "main.h"

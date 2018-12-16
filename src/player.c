@@ -28,18 +28,6 @@ Bullet bullet = {
     .life = 0
 };
 
-Bullet init_bullet = {
-    .pos_x = .0f,
-    .pos_y = 3.0f,
-    .pos_z = .0f,
-    .lx = .0f,
-    .ly = .0f,
-    .lz = .0f,
-    .speed = .6f,
-    .fired = 0,
-    .life = 0
-};
-
 Bullet bullets[MAX_BULLET_NUM];
 
 const float view_azdt = 5, view_elevdt = 3;
@@ -146,7 +134,7 @@ void fire_bullet() {
         // Ako nema, cekaj da neki "umre" pa ga opali
         if (!bullets[i].fired) {
             bullets[i].speed = .6f;
-            // printf("Ispaljujem metak %d \n", i);
+
             bullets[i].pos_x = player.pos_x;
             bullets[i].pos_y = player.pos_y - .3f; // da ne puca bas iz glave
             bullets[i].pos_z = player.pos_z;
@@ -154,8 +142,6 @@ void fire_bullet() {
             bullets[i].lx = lookat_x; 
             bullets[i].ly = lookat_y; 
             bullets[i].lz = lookat_z; 
-
-            printf("%lf %lf %lf\n", bullets[i].lx, bullets[i].ly, bullets[i].lz);
 
             bullets[i].fired = 1;
             bullets[i].life = 0;

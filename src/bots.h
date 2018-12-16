@@ -6,6 +6,8 @@
 #include <math.h>
 #include "player.h"
 
+#define BOT_NUM 2
+
 typedef struct {
     float pos_x;
     float pos_y;
@@ -15,14 +17,21 @@ typedef struct {
     float lz;
     float speed;
     int health;
+    int x;
+    int y;
+    int z;
+    Bullet bullet;
 } Bot;
 
-extern Bot bot;
-extern Bullet bbullet;
+extern Bot bot_initializer;
+extern Bot bots[BOT_NUM];
 
-extern void draw_bot();
-extern void move_bot();
-extern void shoot();
-extern void set_bot_material();
+
+extern void draw_bots();
+extern void move_bots();
+extern void shoot(int i); // Indeks bota koji trenutno puca
+extern void set_bot_material(int i); // Indeks bota kome treba postaviti materijal
+
+extern void init_bots();
 
 #endif
