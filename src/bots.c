@@ -21,7 +21,7 @@ Bullet bbullet = {
     .lx = .0f,
     .ly = .0f,
     .lz = .0f,
-    .speed = .4f,
+    .speed = .6f,
     .fired = 0,
     .life = 0
 };
@@ -50,7 +50,7 @@ void draw_bot() {
 
         set_bot_material();
 
-        glutSolidCube(2);
+        glutSolidCube(1);
 
         glPopMatrix();
         glPopMatrix();
@@ -68,10 +68,9 @@ void set_bot_material() {
         glMaterialfv(GL_FRONT, GL_DIFFUSE, material_diffuse);
         glMaterialfv(GL_FRONT, GL_SPECULAR, material_specular);
         glMaterialf(GL_FRONT, GL_SHININESS, shininess);
-        return;
-        // 0.05	0.0	0.0	0.5	0.4	0.4	0.7	0.04	0.04	.078125
-        
+        return;        
     }
+
     if (bot.health <= 75) {
         float material_ambient[] = {.0f, .0f, .0f, .0f};
         float material_diffuse[] = {.5f, .0f, .0f};
@@ -94,6 +93,8 @@ void move_bot() {
         bot.pos_x += bot.lx * bot.speed;
         bot.pos_y += bot.ly * bot.speed;
         bot.pos_z += bot.lz * bot.speed;
+
+        printf("--- %lf %lf %lf\n", bot.pos_x, bot.pos_y, bot.pos_z);
     }
 }
 

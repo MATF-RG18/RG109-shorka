@@ -23,7 +23,7 @@ Bullet bullet = {
     .lx = .0f,
     .ly = .0f,
     .lz = .0f,
-    .speed = .4f,
+    .speed = .6f,
     .fired = 0,
     .life = 0
 };

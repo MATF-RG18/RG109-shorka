@@ -6,6 +6,8 @@ void move_bullets() {
         bullet.pos_y += bullet.speed * bullet.ly;
         bullet.pos_z += bullet.speed * bullet.lz;
 
+        printf("%lf %lf %lf \n", bullet.pos_x, bullet.pos_y, bullet.pos_z);
+
         bullet.life++;
         bullet.fired = bullet.life <= 200 ? 1 : 0;
     }
