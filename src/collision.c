@@ -12,6 +12,7 @@ float max(float a, float b) {
     return a > b ? a : b;
 }
 
+
 int m = 0;
 void bot_bullet() {
     // Slozenost otisla....

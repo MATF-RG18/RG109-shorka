@@ -48,22 +48,22 @@ void draw_bots() {
         if (bots[i].health > 0) {
             bots[i].cnt_alive++;
 
-            if (bots[i].cnt_alive == 450) {
+            if (bots[i].cnt_alive == 350) {
+                // Mora nekako da im se razdvoje segmenti u kojima se krecu
                 float rand_x = (float)rand()/(float)(RAND_MAX/5.0) + 20;
-                // float rand_y = (float)rand()/(float)(RAND_MAX/(jump_max - 2)/2) + 2;
                 float rand_z = (float)rand()/(float)(RAND_MAX/40) - 20;
+                float rand_y = (float)rand()/(float)(RAND_MAX/jump_max);
 
-                float vy = 0;
+                float vy = rand_y - bots[i].pos_y;
                 float vx = rand_x - bots[i].pos_x;
                 float vz = rand_z - bots[i].pos_z;
 
-                // float norm = sqrtf(vx*vx + vy*vy + vz*vz);
+                bots[i].ly = vy;
+                bots[i].lx = vx;
+                bots[i].lz = vz;
+                printf("%d. %lf %lf %lf\n",i, bots[i].lx, bots[i].ly, bots[i].lz);
 
-                bots[i].ly = vy;// / norm;
-                bots[i].lx = vx;// / norm;
-                bots[i].lz = vz;// / norm;
-
-                bots[i].cnt_alive %= 450;
+                bots[i].cnt_alive = 0;
             }
             
             glPushMatrix();
