@@ -29,9 +29,9 @@ void bot_bullet() {
 
             for (int j = 0; j < MAX_BULLET_NUM; j++) {
                 if (bullets[j].fired){
-                    if ((bullets[j].pos_x <= bot_xmax && bullets[j].pos_x >= bot_xmin) && 
-                        (bullets[j].pos_y <= bot_ymax && bullets[j].pos_y >= bot_ymin) && 
-                        (bullets[j].pos_z <= bot_zmax && bullets[j].pos_z >= bot_zmin)) {
+                    if ((bullets[j].pos_x + bullets[i].radius <= bot_xmax && bullets[j].pos_x + bullets[i].radius >= bot_xmin) && 
+                        (bullets[j].pos_y + bullets[i].radius <= bot_ymax && bullets[j].pos_y + bullets[i].radius >= bot_ymin) && 
+                        (bullets[j].pos_z + bullets[i].radius <= bot_zmax && bullets[j].pos_z + bullets[i].radius >= bot_zmin)) {
                             printf("Pogodio si bota %d\n", i);
 
                             bullets[j].fired = 0;
@@ -41,8 +41,8 @@ void bot_bullet() {
                             bullets[j].pos_z = player.pos_z;
 
                             bots[i].health -= 30;
-                            // return;
-                            break;
+                            return;
+                            // break;
                         }
                 }
             }

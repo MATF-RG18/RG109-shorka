@@ -8,13 +8,14 @@
 
 Bot bot_initializer = {
     .pos_x = 30,
-    .pos_y = 2,
+    .pos_y = 4,
     .pos_z = 0,
     .lx = 0,
     .ly = 0,
     .lz = 0,
-    .speed = 0.04f,
-    .health = 100
+    .speed = 0.02f,
+    .health = 100,
+    .cnt_alive = 0
 };
 
 Bot bots[BOT_NUM];
@@ -22,7 +23,7 @@ Bot bots[BOT_NUM];
 void init_bots() {
     bots[0] = bot_initializer;
     bots[0].pos_x = 30;
-    bots[0].pos_y = 0;
+    bots[0].pos_y = 4;
     bots[0].pos_z = 10;
 
     bots[0].bullet = bullet_initializer;
@@ -32,8 +33,8 @@ void init_bots() {
 
     bots[1] = bot_initializer;
     bots[1].pos_x = 30;
-    bots[1].pos_y = 0;
-    bots[1].pos_z = -5;
+    bots[1].pos_y = 4;
+    bots[1].pos_z = -10;
 
     bots[1].bullet = bullet_initializer;
     bots[1].bullet.pos_x = bots[1].pos_x;
@@ -45,28 +46,26 @@ void init_bots() {
 void draw_bots() { 
     for (int i = 0; i < BOT_NUM; i++) {
         if (bots[i].health > 0) {
-            // Da bot ne prelazi po x-u blize od 20 :)
-            // float h = fabsf(bot.pos_z - player.pos_z);
-            // float rand_x = (float)rand()/(float)(RAND_MAX/10.0) + 20;
-            // float rand_y = (float)rand()/(float)(RAND_MAX/(jump_max - 2)) + 2;
-            // float rand_z = (float)rand()/(float)(RAND_MAX/80) - 40;
+            bots[i].cnt_alive++;
 
-            // float rand_x = (float)rand()/(float)(RAND_MAX/100.0);
-            // float rand_y = (float)rand()/(float)(RAND_MAX/100);
-            // float rand_z = (float)rand()/(float)(RAND_MAX/100);
+            if (bots[i].cnt_alive == 450) {
+                float rand_x = (float)rand()/(float)(RAND_MAX/5.0) + 20;
+                // float rand_y = (float)rand()/(float)(RAND_MAX/(jump_max - 2)/2) + 2;
+                float rand_z = (float)rand()/(float)(RAND_MAX/40) - 20;
 
-            // printf("[draw_bots] Crtam bota %d na %lf %lf %lf\n",i, bots[i].pos_x, bots[i].pos_y, bots[i].pos_z);
+                float vy = 0;
+                float vx = rand_x - bots[i].pos_x;
+                float vz = rand_z - bots[i].pos_z;
 
-            // float vy = rand_y - bots[i].pos_y;
-            // float vx = rand_x - bots[i].pos_x;
-            // float vz = rand_z - bots[i].pos_z;
+                // float norm = sqrtf(vx*vx + vy*vy + vz*vz);
 
-            // float norm = sqrtf(vx*vx + vy*vy + vz*vz);
+                bots[i].ly = vy;// / norm;
+                bots[i].lx = vx;// / norm;
+                bots[i].lz = vz;// / norm;
 
-            // bots[i].ly = vy;// / norm;
-            // bots[i].lx = vx;// / norm;
-            // bots[i].lz = vz;// / norm;
-
+                bots[i].cnt_alive %= 450;
+            }
+            
             glPushMatrix();
 
             glTranslatef(bots[i].pos_x, bots[i].pos_y, bots[i].pos_z);
@@ -102,10 +101,8 @@ void set_bot_material(int i) {
         glMaterialfv(GL_FRONT, GL_DIFFUSE, material_diffuse);
         glMaterialfv(GL_FRONT, GL_SPECULAR, material_specular);
         glMaterialf(GL_FRONT, GL_SHININESS, shininess);
-        return;        
     }
-
-    if (bots[i].health <= 50) {
+    else if (bots[i].health <= 50) {
         // printf("[set_bot_material] menjam materijal botu %d hp=%d\n", i, bots[i].health);
         float material_ambient[] = {.1745f, .01175f, .01175f,};
         float material_diffuse[] = {.61424f, .04136f, .04136f};
@@ -116,10 +113,8 @@ void set_bot_material(int i) {
         glMaterialfv(GL_FRONT, GL_DIFFUSE, material_diffuse);
         glMaterialfv(GL_FRONT, GL_SPECULAR, material_specular);
         glMaterialf(GL_FRONT, GL_SHININESS, shininess);
-        return;
     }
-
-    if (bots[i].health <= 75) {
+    else if (bots[i].health <= 75) {
         // printf("[set_bot_material] menjam materijal botu %d hp=%d\n", i, bots[i].health);
         float material_ambient[] = {.0f, .0f, .0f, .0f};
         float material_diffuse[] = {.5f, .0f, .0f};
@@ -130,10 +125,8 @@ void set_bot_material(int i) {
         glMaterialfv(GL_FRONT, GL_DIFFUSE, material_diffuse);
         glMaterialfv(GL_FRONT, GL_SPECULAR, material_specular);
         glMaterialf(GL_FRONT, GL_SHININESS, shininess);
-        return;
     }
-
-    if (bots[i].health <= 100) {
+    else if (bots[i].health <= 100) {
         // printf("[set_bot_material] menjam materijal botu %d hp=%d\n", i, bots[i].health);
         float material_ambient[]={ 0.19225f, 0.19225f, 0.19225f, 1.0f };
         float material_diffuse[]={ 0.50754f, 0.50754f, 0.50754f, 1.0f};
@@ -144,7 +137,6 @@ void set_bot_material(int i) {
         glMaterialfv(GL_FRONT, GL_DIFFUSE, material_diffuse);
         glMaterialfv(GL_FRONT, GL_SPECULAR, material_specular);
         glMaterialf(GL_FRONT, GL_SHININESS, shininess);
-        return;
     }
 }
 

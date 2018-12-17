@@ -20,6 +20,7 @@ typedef struct {
     int x;
     int y;
     int z;
+    int cnt_alive;
     Bullet bullet;
 } Bot;
 

@@ -33,6 +33,7 @@ typedef struct {
     float speed;
     int fired;
     int life;
+    float radius;
 } Bullet;
 
 extern Player player;

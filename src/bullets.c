@@ -9,7 +9,8 @@ Bullet bullet_initializer = {
     .lz = .0f,
     .speed = .6f,
     .fired = 0,
-    .life = 0
+    .life = 0,
+    .radius = 0.4f
 };
 
 void move_bullets() {
@@ -20,6 +21,17 @@ void move_bullets() {
             bullets[i].pos_y += bullets[i].speed * bullets[i].ly;
             bullets[i].pos_z += bullets[i].speed * bullets[i].lz;
 
+
+            if (bullets[i].pos_x >= 80 || bullets[i].pos_x <= -80) {
+                bullets[i].fired = 0;
+                bullets[i].life = 201;
+                // printf("Presao 40 ili -40 po x\n");
+            }
+
+            if (bullets[i].pos_z >= 80 || bullets[i].pos_z <= -80) {
+                bullets[i].fired = 0;
+                bullets[i].life = 201;
+            }
 
             bullets[i].life++;
             bullets[i].fired = bullets[i].life <= 200 ? 1 : 0;

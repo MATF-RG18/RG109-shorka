@@ -15,9 +15,6 @@ int FULL_SCREEN = 0;
 int init_wheight = 800;
 float aspect = 16.0/9;
  
-
-// U SVE POMERAJE CE ICI dt, TJ RAZLIKA IZMEDJU DVA POZIVA TIMERA
-// ZBOG RAZLIKE U BRZINAMA RACUNARA
 int main(int argc, char **argv) {
     // Inicijalizacija gluta
     glutInit(&argc, argv);
@@ -120,6 +117,7 @@ void on_reshape(int width, int height) {
 
 // Funkcija koja se poziva kada treba da se prikaze scena
 void on_display_func(void) {
+    // counter = counter % 150;
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glMatrixMode(GL_MODELVIEW);
