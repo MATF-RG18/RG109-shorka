@@ -45,12 +45,15 @@ void init_bots() {
 }
 
 // Nemoj svaki tick da rendomujes
+
+// TODO bot uvek da bude okrenut ka meni
 void draw_bots() { 
     for (int i = 0; i < BOT_NUM; i++) {
         if (bots[i].health > 0) {
             bots[i].cnt_alive++;
 
             if (bots[i].cnt_alive == 350) {
+                
                 // Mora nekako da im se razdvoje segmenti u kojima se krecu
                 float rand_x = (float)rand()/(float)(RAND_MAX/5.0) + 20;
                 float rand_z = (float)rand()/(float)(RAND_MAX/40) - 20;
@@ -72,18 +75,44 @@ void draw_bots() {
 
             glTranslatef(bots[i].pos_x, bots[i].pos_y, bots[i].pos_z);
 
-            glPushMatrix();
-            glScalef(2, 4, 3);
-
-            bots[i].x = 2;
-            bots[i].y = 4;
-            bots[i].z = 3;
-
             set_bot_material(i);
 
-            glutSolidCube(1);
+            // Crtam "glavu"
+            glPushMatrix();
+
+                glTranslatef(0, 2.3f, 0);
+
+                glutSolidSphere(.7f, 40, 40);
 
             glPopMatrix();
+
+            // Crtam ruke
+
+            glPushMatrix();
+
+                glTranslatef(-2, .7f, 0);
+
+                glRotatef(-90, 0, 0, 1);
+
+                glScalef(1, 2, 1);
+
+                glutSolidCube(1);
+
+            glPopMatrix();
+            
+
+            glPushMatrix();
+                glScalef(2, 4, 3);
+
+                bots[i].x = 2;
+                bots[i].y = 4 + .7f; // visina + glava
+                bots[i].z = 3;
+
+
+                glutSolidCube(1);
+
+            glPopMatrix();
+
             glPopMatrix();
         }
     }
@@ -108,7 +137,7 @@ void set_bot_material(int i) {
         float material_ambient[] = {.1745f, .01175f, .01175f,};
         float material_diffuse[] = {.61424f, .04136f, .04136f};
         float material_specular[] = {.727811f, .626959f, .626959f};
-        float shininess = .6f;
+        float shininess = 80;
 
         glMaterialfv(GL_FRONT, GL_AMBIENT, material_ambient);
         glMaterialfv(GL_FRONT, GL_DIFFUSE, material_diffuse);
@@ -120,7 +149,7 @@ void set_bot_material(int i) {
         float material_ambient[] = {.0f, .0f, .0f, .0f};
         float material_diffuse[] = {.5f, .0f, .0f};
         float material_specular[] = {.4f, .6f, .6f};
-        float shininess = .25f;
+        float shininess = 80;
 
         glMaterialfv(GL_FRONT, GL_AMBIENT, material_ambient);
         glMaterialfv(GL_FRONT, GL_DIFFUSE, material_diffuse);
@@ -130,9 +159,9 @@ void set_bot_material(int i) {
     else if (bots[i].health <= 100) {
         // printf("[set_bot_material] menjam materijal botu %d hp=%d\n", i, bots[i].health);
         float material_ambient[]={ 0.19225f, 0.19225f, 0.19225f, 1.0f };
-        float material_diffuse[]={ 0.50754f, 0.50754f, 0.50754f, 1.0f};
-        float material_specular[] ={0.508273f, 0.508273f, 0.508273f, 1.0f };
-        float shininess = 51.2f;
+        float material_diffuse[]={ 0.0f, 0.8f, 0.50754f, 1.0f};
+        float material_specular[] ={0.708273f, 0.708273f, 0.708273f, 1.0f };
+        float shininess = 80.2f;
 
         glMaterialfv(GL_FRONT, GL_AMBIENT, material_ambient);
         glMaterialfv(GL_FRONT, GL_DIFFUSE, material_diffuse);
