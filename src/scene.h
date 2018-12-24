@@ -15,6 +15,5 @@ typedef struct {
 
 extern void draw_scene(void);
 extern void draw_object(void);
-extern void draw_bullets(void);
 
 #endif

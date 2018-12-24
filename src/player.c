@@ -9,7 +9,6 @@ Player player = {
     .base_y = 3.0f
 };
 
-// dodaj sprint, duck
 State player_state = {
     .walking = 0,
     .jumping = 0,
@@ -23,7 +22,7 @@ Bullet bullet = {
     .lx = .0f,
     .ly = .0f,
     .lz = .0f,
-    .speed = .6f,
+    .speed = .9f,
     .fired = 0,
     .life = 0
 };

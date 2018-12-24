@@ -7,13 +7,13 @@
 #include <time.h>
 
 Bot bot_initializer = {
-    .pos_x = 30,
-    .pos_y = 4,
+    .pos_x = 0,
+    .pos_y = 0,
     .pos_z = 0,
     .lx = 0,
     .ly = 0,
     .lz = 0,
-    .speed = 0.02f,
+    .speed = 0.05f,
     .health = 100,
     .cnt_alive = 0
 };
@@ -30,6 +30,7 @@ void init_bots() {
     bots[0].bullet.pos_x = bots[0].pos_x;
     bots[0].bullet.pos_y = bots[0].pos_y;
     bots[0].bullet.pos_z = bots[0].pos_z;
+    bots[0].bullet.speed = .6f;
 
     bots[1] = bot_initializer;
     bots[1].pos_x = 30;
@@ -40,6 +41,7 @@ void init_bots() {
     bots[1].bullet.pos_x = bots[1].pos_x;
     bots[1].bullet.pos_y = bots[1].pos_y;
     bots[1].bullet.pos_z = bots[1].pos_z;
+    bots[1].bullet.speed = .6f;
 }
 
 // Nemoj svaki tick da rendomujes
@@ -61,7 +63,7 @@ void draw_bots() {
                 bots[i].ly = vy;
                 bots[i].lx = vx;
                 bots[i].lz = vz;
-                printf("%d. %lf %lf %lf\n",i, bots[i].lx, bots[i].ly, bots[i].lz);
+                // printf("%d. %lf %lf %lf\n",i, bots[i].lx, bots[i].ly, bots[i].lz);
 
                 bots[i].cnt_alive = 0;
             }
@@ -77,7 +79,6 @@ void draw_bots() {
             bots[i].y = 4;
             bots[i].z = 3;
 
-            // ovde bug... ti posaljes da menjas jednom ali ustv se menja obojici glupane
             set_bot_material(i);
 
             glutSolidCube(1);
@@ -153,16 +154,19 @@ void move_bots() {
     }
 }
 
-extern void shoot(int i) {
-    printf("Puca %d bot\n", i);
-    printf("sa pozicije %lf %lf %lf\n", bots[i].bullet.pos_x, bots[i].bullet.pos_y, bots[i].bullet.pos_z);
+void shoot(int i) {
     bots[i].bullet.pos_x = bots[i].pos_x;
-    bots[i].bullet.pos_y = bots[i].pos_y - .3f; // da ne puca bas iz glave
+    bots[i].bullet.pos_y = bots[i].pos_y;// - .3f; // da ne puca bas iz glave
     bots[i].bullet.pos_z = bots[i].pos_z;
+    printf("[bots.c] Puca %d bot\n", i);
+    printf("\tsa pozicije %lf %lf %lf, %lf %lf %lf\n", bots[i].bullet.pos_x, bots[i].bullet.pos_y, bots[i].bullet.pos_z,
+                                                         bots[i].pos_x, bots[i].pos_y, bots[i].pos_z);
 
     float vx = player.pos_x - bots[i].pos_x;
     float vy = player.pos_y - bots[i].pos_y;
     float vz = player.pos_z - bots[i].pos_z;
+
+    printf("pravac metka %lf %lf %lf\n", vx, vy, vz);
 
     float norm = sqrtf(vx*vx + vy*vy + vz*vz);
 

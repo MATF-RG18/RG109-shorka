@@ -39,15 +39,85 @@ void move_bullets() {
     }
 
     // Pomeram metkove koje su ispalili botovi
+    
     for (int i = 0; i < BOT_NUM; i++) {
         if (bots[i].bullet.fired) {
             bots[i].bullet.pos_x += bots[i].bullet.speed * bots[i].bullet.lx;
             bots[i].bullet.pos_y += bots[i].bullet.speed * bots[i].bullet.ly;
             bots[i].bullet.pos_z += bots[i].bullet.speed * bots[i].bullet.lz;
 
+            // printf("[bullets %d] %lf %lf %lf\n",i,  bots[i].bullet.pos_x, bots[i].bullet.pos_y, bots[i].bullet.pos_z);
+
             bots[i].bullet.life++;
             bots[i].bullet.fired = bots[i].bullet.life <= 200 ? 1 : 0;
         }   
     }
     
+}
+
+void draw_bullets() {
+    for (int i = 0; i < MAX_BULLET_NUM; i++) {
+        if (bullets[i].fired) {
+            glPushMatrix();
+
+            glTranslatef(bullets[i].pos_x, bullets[i].pos_y, bullets[i].pos_z);
+            // printf("Iscrtavam metak na %d-ti %lf %lf %lf\n", i, bullets[i].pos_x, bullets[i].pos_y, bullets[i].pos_z);
+            
+            float material_ambient[] = {0.24725, 0.1995, 0.0745};
+            float material_diffuse[] = {0.75164, 0.60648, 0.22648};
+            float material_specular[] = {0.628281, 0.555802, 0.366065};
+            float shininess = 0.4;
+
+            glMaterialfv(GL_FRONT, GL_AMBIENT, material_ambient);
+            glMaterialfv(GL_FRONT, GL_DIFFUSE, material_diffuse);
+            glMaterialfv(GL_FRONT, GL_SPECULAR, material_specular);
+            glMaterialf(GL_FRONT, GL_SHININESS, shininess);
+
+            glutSolidSphere(.4f, 20, 10);
+
+            bullets[i].radius = .4f;
+
+            glPopMatrix();
+        }
+    }
+
+    for (int i = 0; i < BOT_NUM; i++) {
+        if (bots[i].bullet.fired) {
+            glPushMatrix();
+
+            glTranslatef(bots[i].bullet.pos_x, bots[i].bullet.pos_y, bots[i].bullet.pos_z);
+
+            // printf("[draw_bullets] %lf %lf %lf\n", bots[i].bullet.pos_x, bots[i].bullet.pos_y, bots[i].bullet.pos_z);
+            
+            // SREDI OVO!!!
+            if (i % 2 == 0) {
+                float material_ambient[] = {.0f, .0f, .0f, .0f};
+                float material_diffuse[] = {.5f, .0f, .0f};
+                float material_specular[] = {.4f, .6f, .6f};
+                float shininess = .80;
+
+                glMaterialfv(GL_FRONT, GL_AMBIENT, material_ambient);
+                glMaterialfv(GL_FRONT, GL_DIFFUSE, material_diffuse);
+                glMaterialfv(GL_FRONT, GL_SPECULAR, material_specular);
+                glMaterialf(GL_FRONT, GL_SHININESS, shininess);
+            }
+            else {
+                float material_ambient[] = {.0f, .0f,.0f, .1f};
+                float material_diffuse[] = {.0f, .1f, .45f};
+                float material_specular[] = {.55f, .45f, .25f};
+                float shininess = 80;
+
+                glMaterialfv(GL_FRONT, GL_AMBIENT, material_ambient);
+                glMaterialfv(GL_FRONT, GL_DIFFUSE, material_diffuse);
+                glMaterialfv(GL_FRONT, GL_SPECULAR, material_specular);
+                glMaterialf(GL_FRONT, GL_SHININESS, shininess);
+            }
+
+            
+
+            glutSolidSphere(1.0f, 20, 10);
+
+            glPopMatrix();
+        }
+    }
 }

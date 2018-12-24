@@ -15,8 +15,6 @@ float max(float a, float b) {
 
 int m = 0;
 void bot_bullet() {
-    // Slozenost otisla....
-
     for (int i = 0; i < BOT_NUM; i++) {
         if (bots[i].health > 0) {
             float bot_xmin = min(bots[i].pos_x - bots[i].x/2, bots[i].pos_x + bots[i].x/2);
