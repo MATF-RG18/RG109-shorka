@@ -19,10 +19,10 @@ int BOT_NUM;
  
 int main(int argc, char **argv) {
     if (argc < 2) {
-        printf("Usage: ./shorka num_of_bots; num_of_bots must be less than 15\n");
+        printf("Usage: ./shorka num_of_bots; num_of_bots must be less than 8\n");
         exit(1);
     }
-    if (atoi(argv[1]) < 0 || atoi(argv[1]) > 15) {
+    if (atoi(argv[1]) < 0 || atoi(argv[1]) > 8) {
         printf("Choosen number of bots isn't supported at this moment... :(\n");
         exit(1);
     }

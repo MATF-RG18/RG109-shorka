@@ -6,8 +6,7 @@
 #include <math.h>
 #include "player.h"
 
-// #define BOT_NUM 2
-#define MAX_BOT_NUM 15
+#define MAX_BOT_NUM 8
 
 typedef struct {
     float pos_x;

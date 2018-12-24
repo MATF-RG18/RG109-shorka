@@ -3,7 +3,7 @@ FPS sa botovima.
 
 ## Pokratanje:
 `./shorka num_of_bots` 
-gde je num_of_bots ceo broj manji ili jednak 15, koji predstavlja broj botova koji ce biti protivnici.
+gde je num_of_bots ceo broj manji ili jednak 8, koji predstavlja broj botova koji ce biti protivnici.
 
 ## Kontrole:
 | Kontrola | Opis|

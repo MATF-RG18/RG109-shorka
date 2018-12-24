@@ -37,6 +37,7 @@ void bullet_bullet() {
                 if (bullets[j].fired) {
                     float dist = distance(j, i);
                     if (dist <= bullets[j].radius + bots[i].bullet.radius) {
+                        printf("Pogode se metkovi\n");
                         bullets[j].fired = 0;
                         bots[i].bullet.fired = 0;
                     }
