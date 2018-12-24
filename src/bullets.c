@@ -110,6 +110,7 @@ void draw_bullets() {
     }
 
     for (int i = 0; i < BOT_NUM; i++) {
+        // printf("[bullets.c] %d\n", BOT_NUM);
         if (bots[i].bullet.fired) {
             glPushMatrix();
 
