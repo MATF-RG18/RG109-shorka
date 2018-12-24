@@ -126,7 +126,7 @@ void position_player_view() {
 }
 
 
-
+// Funkcija koja se poziva kada igrac ispaljuje metak
 void fire_bullet() {
     for (int i = 0; i < MAX_BULLET_NUM; i++) {
         // Trazim prvi metak koji moze da se ispali;

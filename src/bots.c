@@ -46,6 +46,7 @@ void init_bots() {
 
 // Nemoj svaki tick da rendomujes
 
+// Funkcija koja iscrtava botove na mapi
 // TODO bot uvek da bude okrenut ka meni
 void draw_bots() { 
     for (int i = 0; i < BOT_NUM; i++) {
@@ -122,6 +123,7 @@ void draw_bots() {
     
 }
 
+// Funkcija koja postavlja materijal za isrtavanje bota u zavisnosti od njegovog health-a
 void set_bot_material(int i) {
     if (bots[i].health <= 30) {
         // printf("[set_bot_material] menjam materijal botu %d hp=%d\n", i, bots[i].health);
@@ -173,6 +175,7 @@ void set_bot_material(int i) {
     }
 }
 
+// Funkcija koja se poziva kako bi se botovi kretali po mapi
 void move_bots() {
     for (int i = 0; i < BOT_NUM; i++) {
         if (bots[i].health > 0) {
@@ -186,6 +189,7 @@ void move_bots() {
     }
 }
 
+// Funkcija koja se poziva da bi bot ispalio metak
 void shoot(int i) {
     bots[i].bullet.pos_x = bots[i].pos_x;
     bots[i].bullet.pos_y = bots[i].pos_y;// - .3f; // da ne puca bas iz glave

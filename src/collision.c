@@ -13,6 +13,7 @@ float max(float a, float b) {
     return a > b ? a : b;
 }
 
+// Funkcija koja racuna rastojanje izmedju metka koji player puca i metka koji je bot ispalio
 float distance(int i, int j) {
     float x = powf((bullets[i].pos_x - bots[j].bullet.pos_x), 2);
     float y = powf((bullets[i].pos_y - bots[j].bullet.pos_y), 2);
@@ -20,6 +21,7 @@ float distance(int i, int j) {
     return sqrtf(x + y + z);
 }
 
+// Funkcija koja racuna rastojanje izmedju metka koji player ispaljuje i glave botova
 float dst_bullet_head(int i, int j) {
     float x = powf((bullets[i].pos_x - bots[j].head_x), 2);
     float y = powf((bullets[i].pos_y - bots[j].head_y), 2);

@@ -13,6 +13,7 @@ Bullet bullet_initializer = {
     .radius = 0.4f
 };
 
+// Funkcija koja pomera ispaljene metkova na mapi
 void move_bullets() {
     // Pomeram metkove koje je ispalio igrac
     for (int i = 0; i < MAX_BULLET_NUM; i++) {
@@ -55,6 +56,7 @@ void move_bullets() {
     
 }
 
+// Funkcija koja podesava material metka koji se ispaljuje
 void set_bullet_material(int i) {
     if (i % 2 == 0) {
         float material_ambient[] = {.0f, .0f, .0f, .0f};
@@ -80,6 +82,7 @@ void set_bullet_material(int i) {
     }   
 }
 
+// Funkcija iscrtava ispaljene metkove na mapi
 void draw_bullets() {
     for (int i = 0; i < MAX_BULLET_NUM; i++) {
         if (bullets[i].fired) {
@@ -113,8 +116,6 @@ void draw_bullets() {
             glTranslatef(bots[i].bullet.pos_x, bots[i].bullet.pos_y, bots[i].bullet.pos_z);
 
             // printf("[draw_bullets] %lf %lf %lf\n", bots[i].bullet.pos_x, bots[i].bullet.pos_y, bots[i].bullet.pos_z);
-            
-            // SREDI OVO!!!
             
             set_bullet_material(i);
             
