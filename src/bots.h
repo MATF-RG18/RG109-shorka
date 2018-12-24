@@ -21,6 +21,9 @@ typedef struct {
     int y;
     int z;
     int cnt_alive;
+    float head_x;
+    float head_y;
+    float head_z;
     Bullet bullet;
 } Bot;
 

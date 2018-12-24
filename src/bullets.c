@@ -55,6 +55,31 @@ void move_bullets() {
     
 }
 
+void set_bullet_material(int i) {
+    if (i % 2 == 0) {
+        float material_ambient[] = {.0f, .0f, .0f, .0f};
+        float material_diffuse[] = {.5f, .0f, .0f};
+        float material_specular[] = {.4f, .6f, .6f};
+        float shininess = .80;
+
+        glMaterialfv(GL_FRONT, GL_AMBIENT, material_ambient);
+        glMaterialfv(GL_FRONT, GL_DIFFUSE, material_diffuse);
+        glMaterialfv(GL_FRONT, GL_SPECULAR, material_specular);
+        glMaterialf(GL_FRONT, GL_SHININESS, shininess);
+    }
+    else {
+        float material_ambient[] = {.0f, .0f,.0f, .1f};
+        float material_diffuse[] = {.0f, .1f, .45f};
+        float material_specular[] = {.55f, .45f, .25f};
+        float shininess = 80;
+
+        glMaterialfv(GL_FRONT, GL_AMBIENT, material_ambient);
+        glMaterialfv(GL_FRONT, GL_DIFFUSE, material_diffuse);
+        glMaterialfv(GL_FRONT, GL_SPECULAR, material_specular);
+        glMaterialf(GL_FRONT, GL_SHININESS, shininess);
+    }   
+}
+
 void draw_bullets() {
     for (int i = 0; i < MAX_BULLET_NUM; i++) {
         if (bullets[i].fired) {
@@ -90,31 +115,10 @@ void draw_bullets() {
             // printf("[draw_bullets] %lf %lf %lf\n", bots[i].bullet.pos_x, bots[i].bullet.pos_y, bots[i].bullet.pos_z);
             
             // SREDI OVO!!!
-            if (i % 2 == 0) {
-                float material_ambient[] = {.0f, .0f, .0f, .0f};
-                float material_diffuse[] = {.5f, .0f, .0f};
-                float material_specular[] = {.4f, .6f, .6f};
-                float shininess = .80;
-
-                glMaterialfv(GL_FRONT, GL_AMBIENT, material_ambient);
-                glMaterialfv(GL_FRONT, GL_DIFFUSE, material_diffuse);
-                glMaterialfv(GL_FRONT, GL_SPECULAR, material_specular);
-                glMaterialf(GL_FRONT, GL_SHININESS, shininess);
-            }
-            else {
-                float material_ambient[] = {.0f, .0f,.0f, .1f};
-                float material_diffuse[] = {.0f, .1f, .45f};
-                float material_specular[] = {.55f, .45f, .25f};
-                float shininess = 80;
-
-                glMaterialfv(GL_FRONT, GL_AMBIENT, material_ambient);
-                glMaterialfv(GL_FRONT, GL_DIFFUSE, material_diffuse);
-                glMaterialfv(GL_FRONT, GL_SPECULAR, material_specular);
-                glMaterialf(GL_FRONT, GL_SHININESS, shininess);
-            }
-
             
-
+            set_bullet_material(i);
+            
+            bots[i].bullet.radius = 1;
             glutSolidSphere(1.0f, 20, 10);
 
             glPopMatrix();

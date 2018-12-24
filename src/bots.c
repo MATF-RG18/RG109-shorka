@@ -53,7 +53,6 @@ void draw_bots() {
             bots[i].cnt_alive++;
 
             if (bots[i].cnt_alive == 350) {
-                
                 // Mora nekako da im se razdvoje segmenti u kojima se krecu
                 float rand_x = (float)rand()/(float)(RAND_MAX/5.0) + 20;
                 float rand_z = (float)rand()/(float)(RAND_MAX/40) - 20;
@@ -81,6 +80,10 @@ void draw_bots() {
             glPushMatrix();
 
                 glTranslatef(0, 2.3f, 0);
+
+                bots[i].head_x = bots[i].pos_x;
+                bots[i].head_y = bots[i].pos_y + 2.3f;
+                bots[i].head_z = bots[i].pos_z;
 
                 glutSolidSphere(.7f, 40, 40);
 
@@ -194,8 +197,6 @@ void shoot(int i) {
     float vx = player.pos_x - bots[i].pos_x;
     float vy = player.pos_y - bots[i].pos_y;
     float vz = player.pos_z - bots[i].pos_z;
-
-    printf("pravac metka %lf %lf %lf\n", vx, vy, vz);
 
     float norm = sqrtf(vx*vx + vy*vy + vz*vz);
 
