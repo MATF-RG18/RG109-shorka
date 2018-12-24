@@ -6,7 +6,8 @@
 #include <math.h>
 #include "player.h"
 
-#define BOT_NUM 2
+// #define BOT_NUM 2
+#define MAX_BOT_NUM 15
 
 typedef struct {
     float pos_x;
@@ -28,14 +29,13 @@ typedef struct {
 } Bot;
 
 extern Bot bot_initializer;
-extern Bot bots[BOT_NUM];
+extern Bot bots[MAX_BOT_NUM];
 
-
-extern void draw_bots();
-extern void move_bots();
+extern void draw_bots(int BOT_NUM);
+extern void move_bots(int BOT_NUM);
 extern void shoot(int i); // Indeks bota koji trenutno puca
 extern void set_bot_material(int i); // Indeks bota kome treba postaviti materijal
 
-extern void init_bots();
+extern void init_bots(int BOT_NUM);
 
 #endif

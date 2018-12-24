@@ -9,7 +9,7 @@
 Bot bot_initializer = {
     .pos_x = 0,
     .pos_y = 0,
-    .pos_z = 0,
+    .pos_z = 30,
     .lx = 0,
     .ly = 0,
     .lz = 0,
@@ -18,37 +18,30 @@ Bot bot_initializer = {
     .cnt_alive = 0
 };
 
-Bot bots[BOT_NUM];
+Bot bots[MAX_BOT_NUM];
 
-void init_bots() {
-    bots[0] = bot_initializer;
-    bots[0].pos_x = 30;
-    bots[0].pos_y = 4;
-    bots[0].pos_z = 10;
+void init_bots(int BOT_NUM) {
+    float last_z = 70;
+    for (int i = 0; i < BOT_NUM; i++) {
+        bots[i] = bot_initializer;
+        bots[i].pos_x = 30;
+        bots[i].pos_y = 4;
+        bots[i].pos_z = last_z - 10;
+        last_z = bots[i].pos_z;
 
-    bots[0].bullet = bullet_initializer;
-    bots[0].bullet.pos_x = bots[0].pos_x;
-    bots[0].bullet.pos_y = bots[0].pos_y;
-    bots[0].bullet.pos_z = bots[0].pos_z;
-    bots[0].bullet.speed = .6f;
-
-    bots[1] = bot_initializer;
-    bots[1].pos_x = 30;
-    bots[1].pos_y = 4;
-    bots[1].pos_z = -10;
-
-    bots[1].bullet = bullet_initializer;
-    bots[1].bullet.pos_x = bots[1].pos_x;
-    bots[1].bullet.pos_y = bots[1].pos_y;
-    bots[1].bullet.pos_z = bots[1].pos_z;
-    bots[1].bullet.speed = .6f;
+        bots[i].bullet = bullet_initializer;
+        bots[i].bullet.pos_x = bots[i].pos_x;
+        bots[i].bullet.pos_y = bots[i].pos_y;
+        bots[i].bullet.pos_z = bots[i].pos_z;
+        bots[i].bullet.speed = .6f;
+    }
 }
 
 // Nemoj svaki tick da rendomujes
 
 // Funkcija koja iscrtava botove na mapi
 // TODO bot uvek da bude okrenut ka meni
-void draw_bots() { 
+void draw_bots(int BOT_NUM) { 
     for (int i = 0; i < BOT_NUM; i++) {
         if (bots[i].health > 0) {
             bots[i].cnt_alive++;
@@ -176,7 +169,7 @@ void set_bot_material(int i) {
 }
 
 // Funkcija koja se poziva kako bi se botovi kretali po mapi
-void move_bots() {
+void move_bots(int BOT_NUM) {
     for (int i = 0; i < BOT_NUM; i++) {
         if (bots[i].health > 0) {
             if (!bots[i].bullet.fired) {

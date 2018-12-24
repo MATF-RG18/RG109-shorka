@@ -37,6 +37,9 @@ extern void on_move(int value);
 extern void on_release(unsigned char key, int xx, int yy);
 extern void main_timer_func();
 
+
+extern int BOT_NUM;
+
 #endif
 
 

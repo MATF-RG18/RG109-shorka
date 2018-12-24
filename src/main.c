@@ -10,12 +10,21 @@
 #include "bots.h"
 #include "collision.h"
 #include "bullets.h"
+#include "main.h"
  
 int FULL_SCREEN = 0;
 int init_wheight = 800;
 float aspect = 16.0/9;
+int BOT_NUM;
  
 int main(int argc, char **argv) {
+    if (argc < 2) {
+        printf("Usage: ./shorka num_of_bots; num_of_bots must be less than 15\n");
+        exit(1);
+    }
+
+    BOT_NUM = atoi(argv[1]);
+
     // Inicijalizacija gluta
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_RGBA | GLUT_DEPTH | GLUT_DOUBLE);
@@ -54,7 +63,7 @@ int main(int argc, char **argv) {
     
     srand((unsigned int)time(NULL));
 
-    init_bots();
+    init_bots(BOT_NUM);
 
     glutMainLoop();
 
@@ -84,7 +93,7 @@ void main_timer_func() {
 
     move_bullets();
 
-    move_bots();
+    move_bots(BOT_NUM);
 
     check_collision();          
 
@@ -141,7 +150,7 @@ void on_display_func(void) {
     // Objekti za debug kretanja
     draw_scene();
 
-    draw_bots();
+    draw_bots(BOT_NUM);
 
     draw_bullets();
     
