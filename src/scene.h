@@ -7,11 +7,7 @@
 #include "player.h"
 #include "bots.h"
 
-typedef struct {
-    float pos_x;
-    float pos_y;
-    float pos_z;
-} Object;
+extern int map_edge;
 
 extern void draw_scene(void);
 extern void draw_object(void);

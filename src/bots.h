@@ -5,6 +5,7 @@
 #include <GL/glut.h>
 #include <math.h>
 #include "player.h"
+#include "scene.h"
 
 #define MAX_BOT_NUM 8
 
@@ -20,7 +21,7 @@ typedef struct {
     int x;
     int y;
     int z;
-    int cnt_alive;
+    int count;
     float head_x;
     float head_y;
     float head_z;
@@ -34,6 +35,8 @@ extern void draw_bots(int BOT_NUM);
 extern void move_bots(int BOT_NUM);
 extern void shoot(int i); // Indeks bota koji trenutno puca
 extern void set_bot_material(int i); // Indeks bota kome treba postaviti materijal
+extern void calc_bot_direction(int BOT_NUM);
+extern void make_em_stay();
 
 extern void init_bots(int BOT_NUM);
 

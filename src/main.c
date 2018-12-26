@@ -19,15 +19,16 @@ int BOT_NUM;
  
 int main(int argc, char **argv) {
     if (argc < 2) {
-        printf("Usage: ./shorka num_of_bots; num_of_bots must be less than 8\n");
-        exit(1);
+        printf("Usage: ./shorka num_of_bots; num_of_bots must be less than 8\nRunning default settings num_of_bots=1...\n");
+        BOT_NUM = 1;
     }
-    if (atoi(argv[1]) < 0 || atoi(argv[1]) > 8) {
+    else if (atoi(argv[1]) < 0 || atoi(argv[1]) > 8) {
         printf("Choosen number of bots isn't supported at this moment... :(\n");
         exit(1);
     }
-
-    BOT_NUM = atoi(argv[1]);
+    else {
+        BOT_NUM = atoi(argv[1]);
+    }
 
     // Inicijalizacija gluta
     glutInit(&argc, argv);
@@ -74,7 +75,7 @@ int main(int argc, char **argv) {
     return 0;
 }
 
-// Glavni tajmer
+// Glavni tajmer; Where the magic happens
 void main_timer_func() {
     main_timer_active = 0;
 
@@ -96,6 +97,8 @@ void main_timer_func() {
     }
 
     move_bullets();
+
+    calc_bot_direction(BOT_NUM);
 
     move_bots(BOT_NUM);
 
@@ -142,7 +145,8 @@ void on_display_func(void) {
 
     // Podesavanje boje za bazu
     glDisable(GL_LIGHTING);
-    glColor3f(0.22f, 0.69f, 0.87f);
+    glColor3f(0.55f, .6f, 0);
+
 	glBegin(GL_QUADS);
 		glVertex3f(-100.0f, 0.0f, -100.0f);
 		glVertex3f(-100.0f, 0.0f,  100.0f);
@@ -151,7 +155,6 @@ void on_display_func(void) {
 	glEnd();
     glEnable(GL_LIGHTING);
 
-    // Objekti za debug kretanja
     draw_scene();
 
     draw_bots(BOT_NUM);

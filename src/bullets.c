@@ -13,6 +13,28 @@ Bullet bullet_initializer = {
     .radius = 0.4f
 };
 
+
+// 			0.6
+Bullet_material b_mats[3] = {
+{
+    .diffuse = {0.75164, 0.60648, 0.22648},
+    .ambient = {0.24725, 0.1995, 0.0745},
+    .specular = {0.628281, 0.555802, 0.366065},
+    .shininess = 50
+},
+{
+    .diffuse = {0.4, 0.4, 0.4},
+    .ambient = {0.25, 0.25, 0.25},
+    .specular = {0.774597, 0.774597, 0.774597},
+    .shininess = 60
+},
+{
+    .diffuse = {0.396, 0.74151, 0.69102},
+    .ambient = {0.1, 0.18725, 0.1745},
+    .specular = {0.297254, 0.30829, 0.306678},
+    .shininess = 60
+}};
+
 // Funkcija koja pomera ispaljene metkova na mapi
 void move_bullets() {
     // Pomeram metkove koje je ispalio igrac
@@ -23,13 +45,13 @@ void move_bullets() {
             bullets[i].pos_z += bullets[i].speed * bullets[i].lz;
 
 
-            if (bullets[i].pos_x >= 80 || bullets[i].pos_x <= -80) {
+            if (bullets[i].pos_x >= map_edge || bullets[i].pos_x <= -map_edge) {
                 bullets[i].fired = 0;
                 bullets[i].life = 201;
                 // printf("Presao 40 ili -40 po x\n");
             }
 
-            if (bullets[i].pos_z >= 80 || bullets[i].pos_z <= -80) {
+            if (bullets[i].pos_z >= map_edge || bullets[i].pos_z <= -map_edge) {
                 bullets[i].fired = 0;
                 bullets[i].life = 201;
             }
@@ -62,7 +84,7 @@ void set_bullet_material(int i) {
         float material_ambient[] = {.0f, .0f, .0f, .0f};
         float material_diffuse[] = {.5f, .0f, .0f};
         float material_specular[] = {.4f, .6f, .6f};
-        float shininess = .80;
+        float shininess = 80;
 
         glMaterialfv(GL_FRONT, GL_AMBIENT, material_ambient);
         glMaterialfv(GL_FRONT, GL_DIFFUSE, material_diffuse);
@@ -82,6 +104,14 @@ void set_bullet_material(int i) {
     }   
 }
 
+void set_player_bullet(int i) {
+    i = i % 3;
+    glMaterialfv(GL_FRONT, GL_AMBIENT, b_mats[i].ambient);
+    glMaterialfv(GL_FRONT, GL_DIFFUSE, b_mats[i].diffuse);
+    glMaterialfv(GL_FRONT, GL_SPECULAR, b_mats[i].specular);
+    glMaterialf(GL_FRONT, GL_SHININESS, b_mats[i].shininess);
+}
+
 // Funkcija iscrtava ispaljene metkove na mapi
 void draw_bullets() {
     for (int i = 0; i < MAX_BULLET_NUM; i++) {
@@ -89,19 +119,10 @@ void draw_bullets() {
             glPushMatrix();
 
             glTranslatef(bullets[i].pos_x, bullets[i].pos_y, bullets[i].pos_z);
-            // printf("Iscrtavam metak na %d-ti %lf %lf %lf\n", i, bullets[i].pos_x, bullets[i].pos_y, bullets[i].pos_z);
             
-            float material_ambient[] = {0.24725, 0.1995, 0.0745};
-            float material_diffuse[] = {0.75164, 0.60648, 0.22648};
-            float material_specular[] = {0.628281, 0.555802, 0.366065};
-            float shininess = 0.4;
+            set_player_bullet(i);
 
-            glMaterialfv(GL_FRONT, GL_AMBIENT, material_ambient);
-            glMaterialfv(GL_FRONT, GL_DIFFUSE, material_diffuse);
-            glMaterialfv(GL_FRONT, GL_SPECULAR, material_specular);
-            glMaterialf(GL_FRONT, GL_SHININESS, shininess);
-
-            glutSolidSphere(.4f, 20, 10);
+            glutSolidSphere(.4f, 40, 40);
 
             bullets[i].radius = .4f;
 
@@ -110,14 +131,11 @@ void draw_bullets() {
     }
 
     for (int i = 0; i < BOT_NUM; i++) {
-        // printf("[bullets.c] %d\n", BOT_NUM);
         if (bots[i].bullet.fired) {
             glPushMatrix();
 
             glTranslatef(bots[i].bullet.pos_x, bots[i].bullet.pos_y, bots[i].bullet.pos_z);
 
-            // printf("[draw_bullets] %lf %lf %lf\n", bots[i].bullet.pos_x, bots[i].bullet.pos_y, bots[i].bullet.pos_z);
-            
             set_bullet_material(i);
             
             bots[i].bullet.radius = 1;

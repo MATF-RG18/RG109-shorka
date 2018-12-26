@@ -13,21 +13,21 @@ Bot bot_initializer = {
     .lx = 0,
     .ly = 0,
     .lz = 0,
-    .speed = 0.05f,
+    .speed = 0.2f,
     .health = 100,
-    .cnt_alive = 0
+    .count = 0
 };
 
 Bot bots[MAX_BOT_NUM];
 
+// Funkcija koja inicijalizuje botove
 void init_bots(int BOT_NUM) {
-    float last_z = 70;
     for (int i = 0; i < BOT_NUM; i++) {
         bots[i] = bot_initializer;
-        bots[i].pos_x = 30;
-        bots[i].pos_y = 4;
-        bots[i].pos_z = last_z - 10;
-        last_z = bots[i].pos_z;
+        bots[i].pos_x = (float)rand()/(float)(RAND_MAX/(float)2*(map_edge-1)) - map_edge;
+        bots[i].pos_y = 2;
+        bots[i].pos_z = (float)rand()/(float)(RAND_MAX/(float)2*(map_edge-1)) - map_edge;// - map_edge/2;
+
 
         bots[i].bullet = bullet_initializer;
         bots[i].bullet.pos_x = bots[i].pos_x;
@@ -37,33 +37,45 @@ void init_bots(int BOT_NUM) {
     }
 }
 
-// Nemoj svaki tick da rendomujes
-
-// Funkcija koja iscrtava botove na mapi
-// TODO bot uvek da bude okrenut ka meni
-void draw_bots(int BOT_NUM) { 
+// Funkcija koja racuna vektor u cijem pravcu ce se bot kretati
+// Prvo se randomuje broj koji je promenljiva odlucivanja kada ona bude 0
+// racuan se nova vrednost za taj vektor
+void calc_bot_direction(int BOT_NUM) {
     for (int i = 0; i < BOT_NUM; i++) {
         if (bots[i].health > 0) {
-            bots[i].cnt_alive++;
+            // Ako je ispunjen uslov, treba izracunati novi vektor pravca za i-tog bota;
+            // I dodeliti mu novu vrednost za promenljivu odlucivanja koja govori da li ce u 
+            // datom trenutku bot da menja vektor
+            if (bots[i].count <= 0) {
 
-            if (bots[i].cnt_alive == 350) {
-                // Mora nekako da im se razdvoje segmenti u kojima se krecu
-                float rand_x = (float)rand()/(float)(RAND_MAX/5.0) + 20;
-                float rand_z = (float)rand()/(float)(RAND_MAX/40) - 20;
+                float rand_x = (float)rand()/(float)(RAND_MAX/(float)100) - 50;
+                float rand_z = (float)rand()/(float)(RAND_MAX/(float)100) - 50;
                 float rand_y = (float)rand()/(float)(RAND_MAX/jump_max);
 
                 float vy = rand_y - bots[i].pos_y;
                 float vx = rand_x - bots[i].pos_x;
                 float vz = rand_z - bots[i].pos_z;
 
-                bots[i].ly = vy;
-                bots[i].lx = vx;
-                bots[i].lz = vz;
-                // printf("%d. %lf %lf %lf\n",i, bots[i].lx, bots[i].ly, bots[i].lz);
+                float norm = sqrtf(vx*vx + vy*vy + vz*vz);
 
-                bots[i].cnt_alive = 0;
+                bots[i].ly = vy/norm;
+                bots[i].lx = vx/norm;
+                bots[i].lz = vz/norm;
+
+                // Random broj [5, 10] koji se skalira sa 1000 jer se vreme meri u milisekundama
+                bots[i].count = (int)(rand()/(RAND_MAX/5.0) + 5) * 1000;
             }
-            
+        }
+    }
+}
+
+// Funkcija koja iscrtava botove na mapi
+// TODO bot uvek da bude okrenut ka meni
+void draw_bots(int BOT_NUM) { 
+    for (int i = 0; i < BOT_NUM; i++) {
+        if (bots[i].health > 0) {
+            make_em_stay();
+            bots[i].count -= 5;
             glPushMatrix();
 
             glTranslatef(bots[i].pos_x, bots[i].pos_y, bots[i].pos_z);
@@ -91,7 +103,7 @@ void draw_bots(int BOT_NUM) {
 
                 glRotatef(-90, 0, 0, 1);
 
-                glScalef(1, 2, 1);
+                glScalef(1, 1, 1);
 
                 glutSolidCube(1);
 
@@ -123,7 +135,7 @@ void set_bot_material(int i) {
         float material_ambient[] = {.1745f,0.01175f, 0.01175f};
         float material_diffuse[] = {0.61424f, 0.04136f,	0.04136f};
         float material_specular[] = {0.727811f, 0.626959f, 0.626959f};
-        float shininess = .6f;
+        float shininess = 50;
 
         glMaterialfv(GL_FRONT, GL_AMBIENT, material_ambient);
         glMaterialfv(GL_FRONT, GL_DIFFUSE, material_diffuse);
@@ -187,9 +199,9 @@ void shoot(int i) {
     bots[i].bullet.pos_x = bots[i].pos_x;
     bots[i].bullet.pos_y = bots[i].pos_y;// - .3f; // da ne puca bas iz glave
     bots[i].bullet.pos_z = bots[i].pos_z;
-    printf("[bots.c] Puca %d bot\n", i);
-    printf("\tsa pozicije %lf %lf %lf, %lf %lf %lf\n", bots[i].bullet.pos_x, bots[i].bullet.pos_y, bots[i].bullet.pos_z,
-                                                         bots[i].pos_x, bots[i].pos_y, bots[i].pos_z);
+    // printf("[bots.c] Puca %d bot\n", i);
+    // printf("\tsa pozicije %lf %lf %lf, %lf %lf %lf\n", bots[i].bullet.pos_x, bots[i].bullet.pos_y, bots[i].bullet.pos_z,
+    //                                                      bots[i].pos_x, bots[i].pos_y, bots[i].pos_z);
 
     float vx = player.pos_x - bots[i].pos_x;
     float vy = player.pos_y - bots[i].pos_y;
@@ -197,11 +209,33 @@ void shoot(int i) {
 
     float norm = sqrtf(vx*vx + vy*vy + vz*vz);
 
-    // TODO kad puca kako da me promasuje za malo itd
     bots[i].bullet.lx = vx / norm; 
     bots[i].bullet.ly = vy / norm; 
     bots[i].bullet.lz = vz / norm; 
 
     bots[i].bullet.fired = 1;
     bots[i].bullet.life = 0;
+}
+
+float epsilon = .1f + .5f; // .5f zbog "debljine" zida
+// Funkcija koja ce biti zaduzena da obezbedi kretanje botova tako da ne izlaze sa mape
+void make_em_stay() {
+    for (int i = 0; i < BOT_NUM; i++) {
+        if (bots[i].health) {
+            if (bots[i].pos_x - bots[i].x/2.0 <= -(float)map_edge + epsilon || bots[i].pos_x + bots[i].x/2.0 >= (float)map_edge - epsilon) {
+                // printf("Treba %d na napred/nazad\n", i);
+                bots[i].lx *= -1;
+                bots[i].pos_x += bots[i].lx * .2f;
+            }
+            if (bots[i].pos_z - bots[i].z/2.0 <= -(float)map_edge + epsilon || bots[i].pos_z + bots[i].z/2.0 >= (float)map_edge - epsilon) {
+                // printf("Treba %d ulevo/udesno\n", i);
+                bots[i].lz *= -1;
+                bots[i].pos_z += bots[i].lz * .2f;
+            }
+            if (bots[i].pos_y - bots[i].y/2.0 <= 0) {
+                // printf("Treba %d na gore\n", i);
+                bots[i].ly *= -1;
+            }
+        }
+    }
 }

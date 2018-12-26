@@ -37,7 +37,7 @@ void bullet_bullet() {
                 if (bullets[j].fired) {
                     float dist = distance(j, i);
                     if (dist <= bullets[j].radius + bots[i].bullet.radius) {
-                        printf("Pogode se metkovi\n");
+                        // printf("Pogode se metkovi\n");
                         bullets[j].fired = 0;
                         bots[i].bullet.fired = 0;
                     }
@@ -65,7 +65,7 @@ void bot_bullet() {
                     if ((bullets[j].pos_x + bullets[i].radius <= bot_xmax && bullets[j].pos_x + bullets[i].radius >= bot_xmin) && 
                         (bullets[j].pos_y + bullets[i].radius <= bot_ymax && bullets[j].pos_y + bullets[i].radius >= bot_ymin) && 
                         (bullets[j].pos_z + bullets[i].radius <= bot_zmax && bullets[j].pos_z + bullets[i].radius >= bot_zmin)) {
-                            printf("Pogodio si bota %d\n", i);
+                            // printf("Pogodio si bota %d\n", i);
 
                             bullets[j].fired = 0;
                             
