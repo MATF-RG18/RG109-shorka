@@ -3,6 +3,7 @@
 void check_collision() {
     bot_bullet();
     bullet_bullet();
+    bullet_player();
 }
 
 float min(float a, float b) {
@@ -62,9 +63,9 @@ void bot_bullet() {
 
             for (int j = 0; j < MAX_BULLET_NUM; j++) {
                 if (bullets[j].fired){
-                    if ((bullets[j].pos_x + bullets[i].radius <= bot_xmax && bullets[j].pos_x + bullets[i].radius >= bot_xmin) && 
-                        (bullets[j].pos_y + bullets[i].radius <= bot_ymax && bullets[j].pos_y + bullets[i].radius >= bot_ymin) && 
-                        (bullets[j].pos_z + bullets[i].radius <= bot_zmax && bullets[j].pos_z + bullets[i].radius >= bot_zmin)) {
+                    if ((bullets[j].pos_x + bullets[i].radius <= bot_xmax && bullets[j].pos_x - bullets[i].radius >= bot_xmin) && 
+                        (bullets[j].pos_y + bullets[i].radius <= bot_ymax && bullets[j].pos_y - bullets[i].radius >= bot_ymin) && 
+                        (bullets[j].pos_z + bullets[i].radius <= bot_zmax && bullets[j].pos_z - bullets[i].radius >= bot_zmin)) {
                             // printf("Pogodio si bota %d\n", i);
 
                             bullets[j].fired = 0;
@@ -74,6 +75,8 @@ void bot_bullet() {
                             bullets[j].pos_z = player.pos_z;
 
                             bots[i].health -= 30;
+                            printf("Bot pogodjen\n");
+
                             return;
                             // break;
                     }
@@ -85,6 +88,29 @@ void bot_bullet() {
                     }
                 }
             }
+        }
+    }
+}
+
+// Skidanje healtha-a player-u u zavisnosti od toga da li je u koliziji sa necijim metkom
+void bullet_player() {
+    float x_min = min(player.pos_x - 1, player.pos_x + 1);
+    float x_max = max(player.pos_x - 1, player.pos_x + 1);
+
+    float y_min = min(player.pos_y - 2, player.pos_y + 2);
+    float y_max = max(player.pos_y - 2, player.pos_y + 2);
+
+    float z_min = min(player.pos_z - 1.5, player.pos_z + 1.5);
+    float z_max = max(player.pos_z - 1.5, player.pos_z + 1.5);
+    for (int i = 0; i < BOT_NUM; i++) {
+        if (bots[i].health > 0 && bots[i].bullet.fired) {
+            if (bots[i].bullet.pos_x >= x_min && bots[i].bullet.pos_x <= x_max &&
+                bots[i].bullet.pos_y >= y_min && bots[i].bullet.pos_y <= y_max &&
+                bots[i].bullet.pos_z >= z_min && bots[i].bullet.pos_z <= z_max) {
+                    printf("Pogodjen si bato\n");
+                    // player.health -= 30;
+                    // printf("pl.h=%d\n", player.health);
+                }
         }
     }
 }
