@@ -12,6 +12,7 @@ gde je num_of_bots ceo broj manji ili jednak 8, koji predstavlja broj botova koj
 | `A` | levo |
 | `S` | nazad |
 | `D` | desno |
+| `P` | pauza |
 | `space` | skok |
 | `mis` | kretanje kamere |
 | `levi klik` | ispaljivanje metka |
