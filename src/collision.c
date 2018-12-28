@@ -63,9 +63,9 @@ void bot_bullet() {
 
             for (int j = 0; j < MAX_BULLET_NUM; j++) {
                 if (bullets[j].fired){
-                    if ((bullets[j].pos_x + bullets[i].radius <= bot_xmax && bullets[j].pos_x - bullets[i].radius >= bot_xmin) && 
-                        (bullets[j].pos_y + bullets[i].radius <= bot_ymax && bullets[j].pos_y - bullets[i].radius >= bot_ymin) && 
-                        (bullets[j].pos_z + bullets[i].radius <= bot_zmax && bullets[j].pos_z - bullets[i].radius >= bot_zmin)) {
+                    if ((bullets[j].pos_x + bullets[j].radius <= bot_xmax && bullets[j].pos_x - bullets[j].radius >= bot_xmin) && 
+                        (bullets[j].pos_y + bullets[j].radius <= bot_ymax && bullets[j].pos_y - bullets[j].radius >= bot_ymin) && 
+                        (bullets[j].pos_z + bullets[j].radius <= bot_zmax && bullets[j].pos_z - bullets[j].radius >= bot_zmin)) {
                             bullets[j].fired = 0;
                             
                             bullets[j].pos_x = player.pos_x;
@@ -106,8 +106,8 @@ void bullet_player() {
                 bots[i].bullet.pos_y >= y_min && bots[i].bullet.pos_y <= y_max &&
                 bots[i].bullet.pos_z >= z_min && bots[i].bullet.pos_z <= z_max) {
                     // printf("Pogodjen si bato\n");
-                    player.health -= 10;
-                    bots[i].bullet.fired = 0;
+                    player.health -= 5;
+                    bots[i].bullet.fired -= bots[i].bullet.fired/2;
                     return;
                 }
         }

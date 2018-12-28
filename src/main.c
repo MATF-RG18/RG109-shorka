@@ -99,7 +99,7 @@ void main_timer_func() {
 
     move_bullets();
 
-    calc_bot_direction(BOT_NUM);
+    bot_decide(BOT_NUM);
 
     move_bots(BOT_NUM);
 
@@ -177,19 +177,4 @@ extern void show_bitmap() {
     for(int i = 0; i < strlen(health_display) ; i++){
         glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, health_display[i]);
     }
-
-    // char health_value[300];
-
-    // for (int i = 0; i < BOT_NUM; i++) {
-    //     if (bots[i].health > 0) {
-    //         sprintf(health_value, "\nBOT %d: %d\n", i, bots[i].health);
-    //         strcat(health_display,health_value);
-    //     }
-    // }
-
-    // int len = (int)strlen(health_display);
-
-    // for(int i = 0; i < len ; i++){
-    //     glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18,health_display[i]);
-    // }
 }

@@ -39,8 +39,9 @@ void init_bots(int BOT_NUM) {
 
 // Funkcija koja racuna vektor u cijem pravcu ce se bot kretati
 // Prvo se randomuje broj koji je promenljiva odlucivanja kada ona bude 0
-// racuan se nova vrednost za taj vektor
-void calc_bot_direction(int BOT_NUM) {
+// racuan se nova vrednost za taj vektor;
+// Dodato da bira da li ce i kada da opali metak
+void bot_decide(int BOT_NUM) {
     for (int i = 0; i < BOT_NUM; i++) {
         if (bots[i].health > 0) {
             // Ako je ispunjen uslov, treba izracunati novi vektor pravca za i-tog bota;
@@ -68,8 +69,7 @@ void calc_bot_direction(int BOT_NUM) {
 
             // Isti princip za izbor da li bot da ispali metak ili da ceka
             if (bots[i].bullet.fired <= 0) {
-                bots[i].bullet.fired = (int)(rand()/(RAND_MAX/5.0) + 8) * 100;
-                // printf("%d: %d\n", i, bots[i].bullet.fired);
+                bots[i].bullet.fired = (int)(rand()/(RAND_MAX/5.0) + 5) * 1000;
                 shoot(i);
             }
         }
@@ -106,7 +106,7 @@ void draw_bots(int BOT_NUM) {
 
             glPushMatrix();
 
-                glTranslatef(-2, .7f, 0);
+                glTranslatef(-1, .7f, 0);
 
                 glRotatef(-90, 0, 0, 1);
 
@@ -203,9 +203,6 @@ void shoot(int i) {
     bots[i].bullet.pos_x = bots[i].pos_x;
     bots[i].bullet.pos_y = bots[i].pos_y;// - .3f; // da ne puca bas iz glave
     bots[i].bullet.pos_z = bots[i].pos_z;
-    // printf("[bots.c] Puca %d bot\n", i);
-    // printf("\tsa pozicije %lf %lf %lf, %lf %lf %lf\n", bots[i].bullet.pos_x, bots[i].bullet.pos_y, bots[i].bullet.pos_z,
-    //                                                      bots[i].pos_x, bots[i].pos_y, bots[i].pos_z);
 
     float vx = player.pos_x - bots[i].pos_x;
     float vy = player.pos_y - bots[i].pos_y;
@@ -217,7 +214,7 @@ void shoot(int i) {
     bots[i].bullet.ly = vy / norm; 
     bots[i].bullet.lz = vz / norm; 
 
-    bots[i].bullet.fired = 1;
+    // bots[i].bullet.fired ;
     bots[i].bullet.life = 0;
 }
 

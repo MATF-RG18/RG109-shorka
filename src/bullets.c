@@ -10,12 +10,10 @@ Bullet bullet_initializer = {
     .speed = .6f,
     .fired = 0,
     .life = 0,
-    .radius = 0.4f,
+    .radius = 0.6f,
     .cnt = 0
 };
 
-
-// 			0.6
 Bullet_material b_mats[3] = {
 {
     .diffuse = {0.75164, 0.60648, 0.22648},
@@ -67,14 +65,21 @@ void move_bullets() {
     for (int i = 0; i < BOT_NUM; i++) {
         if (bots[i].bullet.fired) {
 
-            bots[i].bullet.fired -= 2;
+            bots[i].bullet.fired -= 10;
+            // printf("%d: fired: %d\n",i, bots[i].bullet.fired);
 
             bots[i].bullet.pos_x += bots[i].bullet.speed * bots[i].bullet.lx;
             bots[i].bullet.pos_y += bots[i].bullet.speed * bots[i].bullet.ly;
             bots[i].bullet.pos_z += bots[i].bullet.speed * bots[i].bullet.lz;
 
-            bots[i].bullet.life++;
-            bots[i].bullet.fired = bots[i].bullet.life <= 200 ? 1 : 0;
+            // Malo kalemljenja :)
+            if (bots[i].bullet.pos_x >= 2*map_edge || bots[i].bullet.pos_x <= -2*map_edge) {
+                bots[i].bullet.fired -= bots[i].bullet.fired/3;
+            }
+
+            if (bots[i].bullet.pos_z >= 2*map_edge || bots[i].bullet.pos_z <= -2*map_edge) {
+                bots[i].bullet.fired -= bots[i].bullet.fired/3;
+            }
         }   
     }
     
@@ -140,8 +145,8 @@ void draw_bullets() {
 
             set_bullet_material(i);
             
-            bots[i].bullet.radius = 1;
-            glutSolidSphere(1.0f, 20, 10);
+            // bots[i].bullet.radius = .5f;
+            glutSolidSphere(bots[i].bullet.radius, 40, 40);
 
             glPopMatrix();
         }

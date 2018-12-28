@@ -7,7 +7,7 @@ Player player = {
     .curr_speed = 0,
     .step = 0.07f,
     .base_y = 3.0f,
-    .health = 0
+    .health = 100
 };
 
 State player_state = {

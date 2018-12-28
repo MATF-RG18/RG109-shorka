@@ -35,7 +35,7 @@ extern void draw_bots(int BOT_NUM);
 extern void move_bots(int BOT_NUM);
 extern void shoot(int i); // Indeks bota koji trenutno puca
 extern void set_bot_material(int i); // Indeks bota kome treba postaviti materijal
-extern void calc_bot_direction(int BOT_NUM);
+extern void bot_decide(int BOT_NUM);
 extern void make_em_stay();
 
 extern void init_bots(int BOT_NUM);
