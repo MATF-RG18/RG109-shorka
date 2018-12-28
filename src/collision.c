@@ -107,7 +107,11 @@ void bullet_player() {
                 bots[i].bullet.pos_z >= z_min && bots[i].bullet.pos_z <= z_max) {
                     // printf("Pogodjen si bato\n");
                     player.health -= 5;
-                    bots[i].bullet.fired -= bots[i].bullet.fired/2;
+                    // bots[i].bullet.fired -= bots[i].bullet.fired/2;
+                    if (player.health <= 0) {
+                        pause_pressed = 1;
+                    }
+
                     return;
                 }
         }

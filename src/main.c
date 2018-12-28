@@ -14,10 +14,10 @@
 #include "main.h"
  
 int FULL_SCREEN = 0;
-int init_wheight = 800;
+int init_wheight = 900;
 float aspect = 16.0/9;
 int BOT_NUM;
- 
+
 int main(int argc, char **argv) {
     if (argc < 2) {
         printf("Usage: ./shorka num_of_bots; num_of_bots must be less than 8\nRunning default settings num_of_bots=1...\n");
@@ -167,14 +167,38 @@ void on_display_func(void) {
 	glutSwapBuffers();
 }
 
-// Funkcija koja generise bitmapu na ekranu
-extern void show_bitmap() {
-    glRasterPos3f(lookat_x + player.pos_x, lookat_y + player.pos_y, lookat_z + player.pos_z-1);
-    char health_display[100];
+// Funkcija koja generise bitmapu na ekranu;
+// sa procentima health-a za svakog zivog bota i za igraca
+void show_bitmap() {
+    float x = lookat_x + player.pos_x;
+    float y = lookat_y + player.pos_y;
+    float z = lookat_z + player.pos_z;
 
-    sprintf(health_display, "Health: %d\n", player.health);
+    char health_display[18];
+    glRasterPos3f(x, y, z);
+    if (player.health <= 0) {
+        sprintf(health_display, "IZGUBIO SI RODJO");
+    }
+    else {
+        sprintf(health_display, "Health: %d\n", player.health);
+    }
 
     for(int i = 0; i < strlen(health_display) ; i++){
         glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, health_display[i]);
     }
+
+    // Prikazivanje health-a botova koji su zivi
+    for (int i = 0; i < BOT_NUM; i++) {
+        if (bots[i].health > 0){
+            sprintf(health_display, "Bot %d\nhp: %d", (i+1), bots[i].health);
+            glRasterPos3f(bots[i].pos_x-2, bots[i].pos_y, bots[i].pos_z-2);
+
+            int len = strlen(health_display);
+            for (int j = 0; j < len; j++) {
+                glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, health_display[j]);
+            }
+        }
+    }
+
+
 }
