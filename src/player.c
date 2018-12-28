@@ -6,13 +6,13 @@ Player player = {
     .pos_z = -10.0f,
     .curr_speed = 0,
     .step = 0.07f,
-    .base_y = 3.0f
+    .base_y = 3.0f,
+    .health = 0
 };
 
 State player_state = {
     .walking = 0,
-    .jumping = 0,
-    .sprint = 0
+    .jumping = 0
 };
 
 Bullet bullets[MAX_BULLET_NUM];
@@ -120,7 +120,7 @@ void fire_bullet() {
         // Trazim prvi metak koji moze da se ispali;
         // Ako nema, cekaj da neki "umre" pa ga opali
         if (!bullets[i].fired) {
-            bullets[i].speed = .9f;
+            bullets[i].speed = 1.2;
 
             bullets[i].pos_x = player.pos_x;
             bullets[i].pos_y = player.pos_y - .3f; // da ne puca bas iz glave

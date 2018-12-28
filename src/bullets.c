@@ -10,7 +10,8 @@ Bullet bullet_initializer = {
     .speed = .6f,
     .fired = 0,
     .life = 0,
-    .radius = 0.4f
+    .radius = 0.4f,
+    .cnt = 0
 };
 
 
@@ -65,11 +66,12 @@ void move_bullets() {
     
     for (int i = 0; i < BOT_NUM; i++) {
         if (bots[i].bullet.fired) {
+
+            bots[i].bullet.fired -= 2;
+
             bots[i].bullet.pos_x += bots[i].bullet.speed * bots[i].bullet.lx;
             bots[i].bullet.pos_y += bots[i].bullet.speed * bots[i].bullet.ly;
             bots[i].bullet.pos_z += bots[i].bullet.speed * bots[i].bullet.lz;
-
-            // printf("[bullets %d] %lf %lf %lf\n",i,  bots[i].bullet.pos_x, bots[i].bullet.pos_y, bots[i].bullet.pos_z);
 
             bots[i].bullet.life++;
             bots[i].bullet.fired = bots[i].bullet.life <= 200 ? 1 : 0;

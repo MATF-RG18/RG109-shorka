@@ -65,6 +65,13 @@ void calc_bot_direction(int BOT_NUM) {
                 // Random broj [5, 10] koji se skalira sa 1000 jer se vreme meri u milisekundama
                 bots[i].count = (int)(rand()/(RAND_MAX/5.0) + 5) * 1000;
             }
+
+            // Isti princip za izbor da li bot da ispali metak ili da ceka
+            if (bots[i].bullet.fired <= 0) {
+                bots[i].bullet.fired = (int)(rand()/(RAND_MAX/5.0) + 8) * 100;
+                // printf("%d: %d\n", i, bots[i].bullet.fired);
+                shoot(i);
+            }
         }
     }
 }
@@ -183,10 +190,7 @@ void set_bot_material(int i) {
 // Funkcija koja se poziva kako bi se botovi kretali po mapi
 void move_bots(int BOT_NUM) {
     for (int i = 0; i < BOT_NUM; i++) {
-        if (bots[i].health > 0) {
-            if (!bots[i].bullet.fired) {
-                shoot(i);
-            }   
+        if (bots[i].health > 0) {   
             bots[i].pos_x += bots[i].lx * bots[i].speed;
             bots[i].pos_y += bots[i].ly * bots[i].speed;
             bots[i].pos_z += bots[i].lz * bots[i].speed;

@@ -3,6 +3,7 @@
 #include <GL/glut.h>
 #include <stdio.h>
 #include <time.h>
+#include <string.h>
 
 #include "player.h"
 #include "scene.h"
@@ -143,6 +144,8 @@ void on_display_func(void) {
     // Podesavanje pogleda igraca
     position_player_view();
 
+    show_bitmap();
+
     // Podesavanje boje za bazu
     glDisable(GL_LIGHTING);
     glColor3f(0.55f, .6f, 0);
@@ -162,4 +165,31 @@ void on_display_func(void) {
     draw_bullets();
     
 	glutSwapBuffers();
+}
+
+// Funkcija koja generise bitmapu na ekranu
+extern void show_bitmap() {
+    glRasterPos3f(lookat_x + player.pos_x, lookat_y + player.pos_y, lookat_z + player.pos_z-1);
+    char health_display[100];
+
+    sprintf(health_display, "Health: %d\n", player.health);
+
+    for(int i = 0; i < strlen(health_display) ; i++){
+        glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, health_display[i]);
+    }
+
+    // char health_value[300];
+
+    // for (int i = 0; i < BOT_NUM; i++) {
+    //     if (bots[i].health > 0) {
+    //         sprintf(health_value, "\nBOT %d: %d\n", i, bots[i].health);
+    //         strcat(health_display,health_value);
+    //     }
+    // }
+
+    // int len = (int)strlen(health_display);
+
+    // for(int i = 0; i < len ; i++){
+    //     glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18,health_display[i]);
+    // }
 }

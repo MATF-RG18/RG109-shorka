@@ -12,17 +12,15 @@ typedef struct {
     float curr_speed;
     float step;
     float base_y;
+    int health;
 } Player;
 
 typedef struct {
     int jumping;
     int walking;
-    int sprint;
 } State;
 
 typedef struct {
-    float r;
-    float g;
     float b;
     float pos_x;
     float pos_y;
@@ -34,12 +32,14 @@ typedef struct {
     int fired;
     int life;
     float radius;
+    int cnt;
 } Bullet;
 
 extern Player player;
 extern State player_state;
 extern Bullet bullet;
 extern Bullet bullets[MAX_BULLET_NUM];
+extern float lookat_x, lookat_y, lookat_z;
 
 extern void on_move(int value);
 extern void on_jump(int value);
