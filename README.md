@@ -1,18 +1,18 @@
 ### RG109-shorka
-FPS sa botovima.
+This is a Computer Graphics course project - First person shooter game vs bots.
 
-## Pokratanje:
+## Usage:
 `./shorka num_of_bots` 
-gde je num_of_bots ceo broj manji ili jednak 8, koji predstavlja broj botova koji ce biti protivnici.
+num_of_bots represent number between 0 and 8 which will be number of bots playing versus player.
 
-## Kontrole:
-| Kontrola | Opis|
-| :-------------: | :-------------: |
-| `W` | pravo |
-| `A` | levo |
-| `S` | nazad |
-| `D` | desno |
-| `P` | pauza |
-| `space` | skok |
-| `mis` | kretanje kamere |
-| `levi klik` | ispaljivanje metka |
+## Controls:
+| Key | Description|
+| :-------------: | :-----------------: |
+| `W` | move forward |
+| `A` | move left |
+| `S` | move backward |
+| `D` | move right |
+| `P` | pause game |
+| `space` | jump |
+| `mouse motion` | moving camera view |
+| `left click` | shoot |
