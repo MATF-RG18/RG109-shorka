@@ -5,7 +5,6 @@ Player player = {
     .pos_y = 3.0f,
     .pos_z = -10.0f,
     .curr_speed = 0,
-    .step = 0.07f,
     .base_y = 3.0f,
     .health = 100
 };

@@ -6,6 +6,7 @@
 #include <math.h>
 #include "player.h"
 #include "scene.h"
+#include "collision.h"
 
 #define MAX_BOT_NUM 8
 
@@ -36,7 +37,6 @@ extern void move_bots(int BOT_NUM);
 extern void shoot(int i); // Indeks bota koji trenutno puca
 extern void set_bot_material(int i); // Indeks bota kome treba postaviti materijal
 extern void bot_decide(int BOT_NUM);
-extern void make_em_stay();
 
 extern void init_bots(int BOT_NUM);
 

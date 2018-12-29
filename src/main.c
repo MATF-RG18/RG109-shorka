@@ -81,8 +81,8 @@ void main_timer_func() {
     main_timer_active = 0;
 
     if (num_of_pressed_keys) {
-        glutTimerFunc(TIMER_INTERVAL, on_move, MOVE_TIMER_ID);
         player_state.walking = 1;
+        glutTimerFunc(TIMER_INTERVAL, on_move, MOVE_TIMER_ID);
     }
 
     // Gravity
@@ -101,9 +101,10 @@ void main_timer_func() {
 
     bot_decide(BOT_NUM);
 
+    check_collision();  
+
     move_bots(BOT_NUM);
 
-    check_collision();          
 
     glutPostRedisplay();
 }

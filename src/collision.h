@@ -14,4 +14,7 @@ extern void bullet_player();
 extern float distance(int i, int j);
 extern float dst_bullet_head(int i, int j);
 
+extern void make_em_stay();
+extern void make_me_stay();
+
 #endif

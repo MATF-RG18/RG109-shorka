@@ -5,12 +5,11 @@
 #include <stdio.h>
 #include <math.h>
 #include "main.h"
+// #include "collision.h"
 // Struktura koja predstavlja igraca
 typedef struct {
     float pos_x, pos_y, pos_z;
-    float vx, vy, vz;
     float curr_speed;
-    float step;
     float base_y;
     int health;
 } Player;

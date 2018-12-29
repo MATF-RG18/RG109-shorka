@@ -81,7 +81,7 @@ void bot_decide(int BOT_NUM) {
 void draw_bots(int BOT_NUM) { 
     for (int i = 0; i < BOT_NUM; i++) {
         if (bots[i].health > 0) {
-            make_em_stay();
+            // make_em_stay();
             bots[i].count -= 5;
             glPushMatrix();
 
@@ -175,9 +175,9 @@ void set_bot_material(int i) {
     }
     else if (bots[i].health <= 100) {
         // printf("[set_bot_material] menjam materijal botu %d hp=%d\n", i, bots[i].health);
-        float material_ambient[]={ 0.19225f, 0.19225f, 0.19225f, 1.0f };
-        float material_diffuse[]={ 0.0f, 0.8f, 0.50754f, 1.0f};
-        float material_specular[] ={0.708273f, 0.708273f, 0.708273f, 1.0f };
+        float material_diffuse[]={0.0, 0.50980392, 0.50980392, 1.0f };
+        float material_ambient[]={ 0.0f, 0.1f, 0.06f, 1.0f};
+        float material_specular[] ={0.50196078, 0.50196078f, 0.50196078f, 1.0f };
         float shininess = 80.2f;
 
         glMaterialfv(GL_FRONT, GL_AMBIENT, material_ambient);
@@ -218,25 +218,3 @@ void shoot(int i) {
     bots[i].bullet.life = 0;
 }
 
-float epsilon = .1f + .5f; // .5f zbog "debljine" zida
-// Funkcija koja ce biti zaduzena da obezbedi kretanje botova tako da ne izlaze sa mape
-void make_em_stay() {
-    for (int i = 0; i < BOT_NUM; i++) {
-        if (bots[i].health) {
-            if (bots[i].pos_x - bots[i].x/2.0 <= -(float)map_edge + epsilon || bots[i].pos_x + bots[i].x/2.0 >= (float)map_edge - epsilon) {
-                // printf("Treba %d na napred/nazad\n", i);
-                bots[i].lx *= -1;
-                bots[i].pos_x += bots[i].lx * .2f;
-            }
-            if (bots[i].pos_z - bots[i].z/2.0 <= -(float)map_edge + epsilon || bots[i].pos_z + bots[i].z/2.0 >= (float)map_edge - epsilon) {
-                // printf("Treba %d ulevo/udesno\n", i);
-                bots[i].lz *= -1;
-                bots[i].pos_z += bots[i].lz * .2f;
-            }
-            if (bots[i].pos_y - bots[i].y/2.0 <= 0) {
-                // printf("Treba %d na gore\n", i);
-                bots[i].ly *= -1;
-            }
-        }
-    }
-}

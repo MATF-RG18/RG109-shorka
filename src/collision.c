@@ -4,6 +4,8 @@ void check_collision() {
     bot_bullet();
     bullet_bullet();
     bullet_player();
+    make_em_stay();
+    make_me_stay();
 }
 
 float min(float a, float b) {
@@ -115,5 +117,48 @@ void bullet_player() {
                     return;
                 }
         }
+    }
+}
+
+float epsilon = .1f + .7f; // .5f zbog "debljine" zida
+// Funkcija koja ce biti zaduzena da obezbedi kretanje botova tako da ne izlaze sa mape
+void make_em_stay() {
+    for (int i = 0; i < BOT_NUM; i++) {
+        if (bots[i].health) {
+            if (bots[i].pos_x - bots[i].x/2.0 <= -(float)map_edge + epsilon || bots[i].pos_x + bots[i].x/2.0 >= (float)map_edge - epsilon) {
+                // printf("Treba %d na napred/nazad\n", i);
+                bots[i].lx *= -1;
+                bots[i].pos_x += bots[i].lx * .2f;
+            }
+            if (bots[i].pos_z - bots[i].z/2.0 <= -(float)map_edge + epsilon || bots[i].pos_z + bots[i].z/2.0 >= (float)map_edge - epsilon) {
+                // printf("Treba %d ulevo/udesno\n", i);
+                bots[i].lz *= -1;
+                bots[i].pos_z += bots[i].lz * .2f;
+            }
+            if (bots[i].pos_y - bots[i].y/2.0 <= 0) {
+                // printf("Treba %d na gore\n", i);
+                bots[i].ly *= -1;
+            }
+        }
+    }
+}
+
+void make_me_stay() {
+    if (player.pos_z >= (float)map_edge - epsilon || player.pos_x >= (float)map_edge - epsilon) {
+        player.pos_x -= epsilon - .2f;
+        player.pos_z -= epsilon - .2f;
+        key_pressed[W] = 0;
+        key_pressed[A] = 0;
+        key_pressed[S] = 0;
+        key_pressed[D] = 0;
+    }
+
+    if (player.pos_z <= -(float)map_edge + epsilon || player.pos_x <= -(float)map_edge + epsilon) {
+        player.pos_x += epsilon - .2f;
+        player.pos_z += epsilon - .2f;
+        key_pressed[W] = 0;
+        key_pressed[A] = 0;
+        key_pressed[S] = 0;
+        key_pressed[D] = 0;
     }
 }

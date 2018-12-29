@@ -77,11 +77,6 @@ void on_keyboard(unsigned char key, int xx, int yy) {
             num_of_pressed_keys++;
             key_pressed[S] = 1;
 			break;
-        case 'C':
-        case 'c':
-            key_pressed[SHIFT] = 1;
-            player_state.sprint = 1;
-            break;
         // Oslobadjanje kursora; npr da bi moglo da se klikne nesto sto je van prozora igre
         case 'K':
         case 'k':
