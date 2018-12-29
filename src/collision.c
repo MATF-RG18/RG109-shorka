@@ -40,7 +40,6 @@ void bullet_bullet() {
                 if (bullets[j].fired) {
                     float dist = distance(j, i);
                     if (dist <= bullets[j].radius + bots[i].bullet.radius) {
-                        // printf("Pogode se metkovi\n");
                         bullets[j].fired = 0;
                         bots[i].bullet.fired = 0;
                     }
@@ -57,7 +56,7 @@ void bot_bullet() {
             float bot_xmin = min(bots[i].pos_x - bots[i].x/2, bots[i].pos_x + bots[i].x/2);
             float bot_xmax = max(bots[i].pos_x - bots[i].x/2, bots[i].pos_x + bots[i].x/2);
 
-            float bot_ymin = min(bots[i].pos_y - bots[i].y/2, bots[i].pos_y + bots[i].y/2);// 4 je visina bota
+            float bot_ymin = min(bots[i].pos_y - bots[i].y/2, bots[i].pos_y + bots[i].y/2);
             float bot_ymax = max(bots[i].pos_y - bots[i].y/2, bots[i].pos_y + bots[i].y/2);
 
             float bot_zmin = min(bots[i].pos_z - bots[i].z/2, bots[i].pos_z + bots[i].z/2);
@@ -107,10 +106,9 @@ void bullet_player() {
             if (bots[i].bullet.pos_x >= x_min && bots[i].bullet.pos_x <= x_max &&
                 bots[i].bullet.pos_y >= y_min && bots[i].bullet.pos_y <= y_max &&
                 bots[i].bullet.pos_z >= z_min && bots[i].bullet.pos_z <= z_max) {
-                    // printf("Pogodjen si bato\n");
                     player.health -= 5;
-                    // bots[i].bullet.fired -= bots[i].bullet.fired/2;
                     if (player.health <= 0) {
+                        printf("ENG GAME, utepan si bato\n");
                         pause_pressed = 1;
                     }
 
@@ -120,7 +118,7 @@ void bullet_player() {
     }
 }
 
-float epsilon = .1f + .7f; // .5f zbog "debljine" zida
+float epsilon = .1f + .7f; // .7f zbog "debljine" zida
 // Funkcija koja ce biti zaduzena da obezbedi kretanje botova tako da ne izlaze sa mape
 void make_em_stay() {
     for (int i = 0; i < BOT_NUM; i++) {

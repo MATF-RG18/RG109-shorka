@@ -129,9 +129,9 @@ void draw_bullets() {
             
             set_player_bullet(i);
 
-            glutSolidSphere(.4f, 40, 40);
+            glutSolidSphere(.2f, 40, 40);
 
-            bullets[i].radius = .4f;
+            bullets[i].radius = .2f;
 
             glPopMatrix();
         }
