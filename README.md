@@ -2,7 +2,7 @@
 
 ### Short description
 This is a Computer Graphics course project - First person shooter game vs bots.<br /><br />
-Each players' bullet takes 30hp from bot, so every bot should be hit 4 times. Bots are changing colors depending on their health percentage.<br />
+Each players' bullet takes 30hp from bot, so every bot should be hit 4 times. Headshot deals double damage. Bots are changing colors depending on their health percentage.<br />
 Bots are little bit weaker than player, so their bullet takes 15hp from player.
 
 ### Build:
