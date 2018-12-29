@@ -14,7 +14,7 @@
 #include "main.h"
  
 int FULL_SCREEN = 0;
-int init_wheight = 900;
+int init_wheight = 1000;
 float aspect = 16.0/9;
 int BOT_NUM;
 
@@ -107,17 +107,6 @@ void main_timer_func() {
 
 
     glutPostRedisplay();
-}
-
-void toggle_screen_size() {
-    if (FULL_SCREEN == 0) {
-        glutFullScreen();
-        FULL_SCREEN = 1;
-    }
-    else {
-        glutReshapeWindow(init_wheight * aspect, init_wheight);
-        FULL_SCREEN = 0;
-    }
 }
 
 // Funkcija koja se poziva kao callback promene prozora igre

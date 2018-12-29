@@ -97,11 +97,6 @@ void on_keyboard(unsigned char key, int xx, int yy) {
                 glutTimerFunc(TIMER_INTERVAL, on_jump, JUMP_TIMER_ID);
             }
             break;
-        // Ulazak/izlazak iz fullscreen rezima
-        case 'F':
-        case 'f':
-            toggle_screen_size();
-            break;
         // Registrovanje glavnog tajmera; Sluzi za mogucnost pauziranja igre
         case 'P':
         case 'p':
@@ -114,11 +109,6 @@ void on_keyboard(unsigned char key, int xx, int yy) {
                 glutTimerFunc(TIMER_INTERVAL, main_timer_func, MAIN_TIMER_ID);
                 main_timer_active = 1;
             }
-            break;
-        // Spawn bot
-        case 'b':
-        case 'B':
-            key_pressed[B] = 1;
             break;
     }
 }
@@ -146,17 +136,12 @@ void on_release(unsigned char key, int xx, int yy) {
             num_of_pressed_keys--;
             key_pressed[D] = 0;
             break;
-        case 'b':
-        case 'B':
-            key_pressed[B] = 0;
-            break;
     }
 
 }
 
 extern void on_mouse_click(int button, int state, int x, int y) {
     if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
-        // printf("Pucaj\n");
         fire_bullet();
     }
 

@@ -83,8 +83,6 @@ void draw_bots(int BOT_NUM) {
             
             float angle = calculate_angle(i);
 
-            // printf("%lf\n", angle);
-
             bots[i].count -= 5;
             glPushMatrix();
 
