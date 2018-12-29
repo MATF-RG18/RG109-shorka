@@ -33,11 +33,14 @@ extern Bot bot_initializer;
 extern Bot bots[MAX_BOT_NUM];
 
 extern void draw_bots(int BOT_NUM);
+extern void set_bot_material(int i); // Indeks bota kome treba postaviti materijal
+
+extern void bot_decide(int BOT_NUM);
 extern void move_bots(int BOT_NUM);
 extern void shoot(int i); // Indeks bota koji trenutno puca
-extern void set_bot_material(int i); // Indeks bota kome treba postaviti materijal
-extern void bot_decide(int BOT_NUM);
 
 extern void init_bots(int BOT_NUM);
+
+extern float calculate_angle(int i);
 
 #endif

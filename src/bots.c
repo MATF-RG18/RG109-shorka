@@ -77,63 +77,97 @@ void bot_decide(int BOT_NUM) {
 }
 
 // Funkcija koja iscrtava botove na mapi
-// TODO bot uvek da bude okrenut ka meni
 void draw_bots(int BOT_NUM) { 
     for (int i = 0; i < BOT_NUM; i++) {
         if (bots[i].health > 0) {
-            // make_em_stay();
+            
+            float angle = calculate_angle(i);
+
+            // printf("%lf\n", angle);
+
             bots[i].count -= 5;
             glPushMatrix();
 
-            glTranslatef(bots[i].pos_x, bots[i].pos_y, bots[i].pos_z);
+                glTranslatef(bots[i].pos_x, bots[i].pos_y, bots[i].pos_z);
 
-            set_bot_material(i);
+                    glPushMatrix();
 
-            // Crtam "glavu"
-            glPushMatrix();
+                        if (bots[i].pos_z > player.pos_z)
+                            glRotatef(-angle, 0, 1, 0);        
+                        else
+                            glRotatef(angle, 0, 1, 0);
 
-                glTranslatef(0, 2.3f, 0);
+                        set_bot_material(i);
 
-                bots[i].head_x = bots[i].pos_x;
-                bots[i].head_y = bots[i].pos_y + 2.3f;
-                bots[i].head_z = bots[i].pos_z;
+                        // Crtam "glavu"
+                        glPushMatrix();
 
-                glutSolidSphere(.7f, 40, 40);
+                            glTranslatef(0, 2.3f, 0);
 
-            glPopMatrix();
+                            bots[i].head_x = bots[i].pos_x;
+                            bots[i].head_y = bots[i].pos_y + 2.3f;
+                            bots[i].head_z = bots[i].pos_z;
 
-            // Crtam ruke
+                            glutSolidSphere(.7f, 40, 40);
 
-            glPushMatrix();
+                        glPopMatrix();
 
-                glTranslatef(-1, .7f, 0);
+                        // Crtam ruke
+                        glPushMatrix();
 
-                glRotatef(-90, 0, 0, 1);
+                            glTranslatef(-1, .7f, 0);
 
-                glScalef(1, 1, 1);
+                            glRotatef(-90, 0, 0, 1);
 
-                glutSolidCube(1);
+                            glScalef(1, 1, 1);
 
-            glPopMatrix();
-            
+                            glutSolidCube(1);
 
-            glPushMatrix();
-                glScalef(2, 4, 3);
+                        glPopMatrix();
+                        
 
-                bots[i].x = 2;
-                bots[i].y = 4 + .7f; // visina + glava
-                bots[i].z = 3;
+                        glPushMatrix();
+                            glScalef(2, 4, 3);
+
+                            bots[i].x = 2;
+                            bots[i].y = 4 + .7f; // visina + glava
+                            bots[i].z = 3;
 
 
-                glutSolidCube(1);
+                            glutSolidCube(1);
 
-            glPopMatrix();
+                        glPopMatrix();
+
+                    glPopMatrix();
 
             glPopMatrix();
         }
     }
     
 }
+
+// Funkcija koja racuna ugao za koji treba rotirati bota tako da uvek bude okrenut ka igracu
+float calculate_angle(int i) {
+    // Vektor "kojim gleda" bot pri svakom iscrtavanju je (-1, 0, 0)
+    // meni treba ugao izmedju vektora kojim gleda bot i (bot_pos - pl.pos_x, 0, bot_pos - pl.pos_z) to je projekcija mog vektora pogleda na xz ravan
+    // Dobijam ga iz skalarnog proizvoda
+
+    float vx = player.pos_x - bots[i].pos_x;
+    float vz = player.pos_z - bots[i].pos_z;
+
+    float norm_lookat = sqrtf(vx*vx + vz*vz);
+    float dot_prod = -vx / norm_lookat;
+
+    float angle_rad = acos(dot_prod);
+
+    float angle_deg = angle_rad * (180.0 / M_PI);
+
+    // Potrebno jos saznati odnos izmedju vektora (-1, 0, 0) i (bot_pos - pl.pos_x, 0, bot_pos - pl.pos_z) zbor regulisanja smera rotacije
+
+    return angle_deg;
+}
+
+
 
 // Funkcija koja postavlja materijal za isrtavanje bota u zavisnosti od njegovog health-a
 void set_bot_material(int i) {

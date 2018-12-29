@@ -1,9 +1,9 @@
 #include "player.h"
 
 Player player = {
-    .pos_x = 0.0f,
+    .pos_x = -50.0f,
     .pos_y = 3.0f,
-    .pos_z = -10.0f,
+    .pos_z = 0.0f,
     .curr_speed = 0,
     .base_y = 3.0f,
     .health = 100

@@ -66,7 +66,7 @@ int main(int argc, char **argv) {
     glutSetKeyRepeat(GLUT_KEY_REPEAT_OFF);
     main_timer_active = 1;
     glutTimerFunc(TIMER_INTERVAL, main_timer_func, MAIN_TIMER_ID);
-    
+
     srand((unsigned int)time(NULL));
 
     init_bots(BOT_NUM);
@@ -126,6 +126,7 @@ void on_reshape(int width, int height) {
         width = aspect * height;
         glutReshapeWindow(width, height);
     }
+
     // Postavljanje viewporta
     glViewport(0, 0, width, height);
     glMatrixMode(GL_PROJECTION);
@@ -135,7 +136,6 @@ void on_reshape(int width, int height) {
 
 // Funkcija koja se poziva kada treba da se prikaze scena
 void on_display_func(void) {
-    // counter = counter % 150;
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glMatrixMode(GL_MODELVIEW);
